@@ -1,0 +1,151 @@
+/* Profile Page Styles */
+.profile-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 20px; /* Adds space between sections */
+    height: 100vh; /* Full viewport height */
+    overflow: hidden; /* Prevent scrolling on the entire page */
+  }
+  
+  /* Left Section: Profile Details and Photos */
+  .left-section {
+    flex: 1;
+    max-width: 300px; /* Fixed width for the left section */
+    height: 100%; /* Take full height of the parent */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+  }
+  
+  .profile-header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile-banner {
+    height: 150px;
+    background-color: #007bff;
+    border-radius: 12px 12px 0 0;
+  }
+  
+  .profile-info {
+    margin-top: -75px;
+  }
+  
+  .profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid #ffffff;
+    object-fit: cover;
+  }
+  
+  .profile-bio {
+    font-size: 16px;
+    color: #555;
+    margin: 10px 0;
+  }
+  
+  .profile-stats {
+    display: flex;
+    flex-direction: column; /* Stack stats vertically */
+    gap: 10px; /* Space between stats */
+    font-size: 14px;
+    color: #777;
+  }
+  
+  .profile-stats span {
+    display: block; /* Ensure each stat is on a new line */
+  }
+  
+  /* Photos Section */
+  .photos-section {
+    margin-top: 20px;
+  }
+  
+  .photos-section h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .photos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 10px; /* Space between photos */
+  }
+  
+  .user-photo {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+  
+  /* Middle Section: Posts */
+  .middle-section {
+    flex: 2; /* Takes more space than left and right sections */
+    height: 100%; /* Take full height of the parent */
+    overflow-y: auto; /* Enable scrolling for posts */
+  }
+  
+  .middle-section h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Right Section: Settings, Privacy, and Logout */
+  .right-section {
+    flex: 1;
+    max-width: 300px; /* Fixed width for the right section */
+    height: 100%; /* Take full height of the parent */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+  }
+  
+  .right-section h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .settings-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .settings-list li {
+    background-color: #f0f0f0;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #555;
+    cursor: pointer;
+  }
+  
+  .settings-list li:hover {
+    background-color: #e0e0e0;
+  }
+  
+  /* Logout Button */
+  .logout-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .logout-button:hover {
+    background-color: #ff1a1a;
+  }

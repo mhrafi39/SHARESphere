@@ -1,0 +1,127 @@
+/* Profile Page Styles */
+.profile-page {
+  max-width: 1200px; /* Increased to accommodate side-by-side sections */
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Adds space between sections */
+}
+
+/* Left Section: Profile Details */
+.left-section {
+  flex: 1;
+  max-width: 300px; /* Fixed width for the left section */
+}
+.post-container {
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.post-container:hover {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+.profile-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-banner {
+  height: 150px;
+  background-color: #007bff;
+  border-radius: 12px 12px 0 0;
+}
+
+.profile-info {
+  margin-top: -75px;
+}
+
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid #ffffff;
+  object-fit: cover;
+}
+
+.profile-bio {
+  font-size: 16px;
+  color: #555;
+  margin: 10px 0;
+}
+
+.profile-stats {
+  display: flex;
+  flex-direction: column; /* Stack stats vertically */
+  gap: 10px; /* Space between stats */
+  font-size: 14px;
+  color: #777;
+}
+
+.profile-stats span {
+  display: block; /* Ensure each stat is on a new line */
+}
+
+/* Right Section: Communities */
+.right-section {
+  flex: 1;
+  max-width: 300px; /* Fixed width for the right section */
+}
+
+.right-section h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.community-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.community-list li {
+  background-color: #f0f0f0;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Posts Section */
+.posts-section {
+  flex: 100%; /* Takes full width */
+  margin-top: 30px;
+}
+
+.posts-section h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .right-section {
+      display: none;
+  }
+
+  .left-section {
+    display: none;
+}
+
+  .main-content {
+      flex-direction: column;
+      gap: 10px; /* Reduce gap for smaller screens */
+  }
+
+  .sidebar, .right-sidebar {
+      display: none; /* Hide sidebars on smaller screens */
+  }
+
+}

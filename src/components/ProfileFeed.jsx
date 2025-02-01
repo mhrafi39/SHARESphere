@@ -1,0 +1,39 @@
+import React from 'react';
+import { FaBullhorn, FaShare, FaComment, FaEnvelope, FaEdit } from 'react-icons/fa';
+import '../styles/Postprf.css';
+
+const ProfileFeed = ({ author, time, title, content, type, image, price, category }) => {
+  return (
+    <div className="post">
+      <div className="post-header">
+        <img src={author.profilePic} alt="Profile" className="profile-pic" />
+        <div className="post-author">
+          <span className="author-name">{author.name}</span>
+          <span className="post-time">{time}</span>
+        </div>
+      </div>
+      <h3>
+        <FaBullhorn /> {category === 'community' ? 'Community Post' : 'Requested Resource'}: {title}
+      </h3>
+      <p>{content}</p>
+      {image && <img src={image} alt="Post" className="post-image" />}
+      <div className="post-footer">
+        <div className="post-type">
+          <strong>Type:</strong> <span className="resource-type">{type}</span>
+        </div>
+        {price && (
+          <div className="post-price">
+            <strong>Price:</strong> {price}
+          </div>
+        )}
+        <div className="post-actions">
+          <button className="share-btn"><FaShare /> Share</button>
+          <button className="comment-btn"><FaComment /> Comment</button>
+          <button className="message-btn"><FaEdit /> Edit</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProfileFeed;
