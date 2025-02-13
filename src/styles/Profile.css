@@ -1,127 +1,145 @@
-/* Profile Page Styles */
+
+
 .profile-page {
-  max-width: 1200px; /* Increased to accommodate side-by-side sections */
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px; /* Adds space between sections */
+  flex-direction: row;
+  gap: 20px;
+  padding: 20px;
+  height: calc(100vh - 120px);
+
 }
 
-/* Left Section: Profile Details */
-.left-section {
-  flex: 1;
-  max-width: 300px; /* Fixed width for the left section */
-}
-.post-container {
+/* Hamburger Icon (3 lines) */
+.hamburger-icon {
+  display: none; /* Hide by default */
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
   cursor: pointer;
-  margin-bottom: 20px;
+  position: fixed;
+  top: 20px;
+  right: 20px; /* Positioned to the right */
+  z-index: 10;
 }
 
-.post-container:hover {
-  background-color: #f9f9f9;
-  border-radius: 8px;
+.hamburger-icon div {
+  background-color: #333;
+  height: 4px;
+  width: 100%;
+  border-radius: 2px;
 }
+
+/* Right Section (Sidebar) */
+.right-section {
+  position: fixed;
+  top: 0px;
+  right: 0; /* Always visible on large screens */
+  width: 250px;
+  height: 100vh;
+  background-color: #f9f9f9;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 0;
+  z-index: 9;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+}
+.right-section h2{
+  margin-top: 70px;
+}
+
+/* Hide sidebar off-screen on mobile */
+.right-section.hide {
+  transform: translateX(250px); /* Move sidebar off-screen */
+}
+
+/* Middle Section */
+.middle-section {
+  flex: 3;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-right: 0;
+  transition: margin-right 0.3s ease;
+  margin-right: 250px;
+}
+
+.middle-section.sidebar-open {
+  margin-right: 250px; /* Push the middle section to the left when sidebar is open */
+}
+
+/* Profile page specific styles */
 .profile-header {
-  position: relative;
-  text-align: center;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .profile-banner {
+  width: 100%;
   height: 150px;
-  background-color: #007bff;
-  border-radius: 12px 12px 0 0;
+  background-color: #333;
+  border-radius: 10px 10px 0 0;
 }
 
 .profile-info {
-  margin-top: -75px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .profile-pic {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  border: 4px solid #ffffff;
   object-fit: cover;
+  margin-top: -60px;
 }
 
 .profile-bio {
   font-size: 16px;
-  color: #555;
-  margin: 10px 0;
+  text-align: center;
+  margin-top: 10px;
 }
 
 .profile-stats {
   display: flex;
-  flex-direction: column; /* Stack stats vertically */
-  gap: 10px; /* Space between stats */
-  font-size: 14px;
-  color: #777;
+  flex-direction: column;
+  gap: 5px;
+  text-align: center;
 }
 
-.profile-stats span {
-  display: block; /* Ensure each stat is on a new line */
-}
-
-/* Right Section: Communities */
-.right-section {
-  flex: 1;
-  max-width: 300px; /* Fixed width for the right section */
-}
-
-.right-section h2 {
-  font-size: 20px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.community-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.community-list li {
-  background-color: #f0f0f0;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #555;
-}
-
-/* Posts Section */
-.posts-section {
-  flex: 100%; /* Takes full width */
-  margin-top: 30px;
-}
-
-.posts-section h2 {
-  font-size: 20px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
+/* Mobile-specific adjustments */
 @media (max-width: 768px) {
+  /* Show hamburger menu on mobile */
+  .hamburger-icon {
+    display: flex;
+  }
+
+  /* Adjust middle section when sidebar is open */
+  .middle-section {
+    margin-right: 00; /* Push content to the left */
+  }
+  .right-section h2{
+    margin-top: 100px;
+  }
+
+  /* Right Section (Sidebar) */
   .right-section {
-      display: none;
+    right: 0;
+     /* Sidebar is initially off-screen on mobile */
+    transform: translateX(250px); /* Off-screen by default */
   }
 
-  .left-section {
-    display: none;
-}
-
-  .main-content {
-      flex-direction: column;
-      gap: 10px; /* Reduce gap for smaller screens */
+  /* Sidebar visible when toggled */
+  .right-section.show {
+    transform: translateX(0);
+    /* Move to visible position */
   }
-
-  .sidebar, .right-sidebar {
-      display: none; /* Hide sidebars on smaller screens */
+  .middle-section.sidebar-open {
+    margin-right: 00px; /* Push content to the left on mobile */
   }
-
 }

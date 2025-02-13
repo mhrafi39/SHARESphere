@@ -3,7 +3,6 @@ import Sidebar from '../components/Sidebar';
 import Post from '../components/Post';
 import FilterButtons from '../components/FilterButtons';
 import Footer from '../components/Footer';
-import RightSidebar from '../components/RightSidebar';
 import PostDetails from '../components/PostDetails'; // Import the PostDetails component
 import prf from '../assets/prf.jpeg'
 import p from '../assets/p.jpeg'
@@ -108,7 +107,6 @@ const HomePage = () => {
             </>
           )}
         </section>
-        <RightSidebar />
       </div>
       <Footer />
     </div>

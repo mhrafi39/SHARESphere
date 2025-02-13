@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MessageItem from '../components/MessageItem';
+import MessageLog from '../components/MessageLog';
 import '../styles/Messages.css';
 
 const MessagesPage = () => {
+  const [selectedConversation, setSelectedConversation] = useState(null);
+
   const messages = [
     {
       id: 1,
@@ -18,14 +21,35 @@ const MessagesPage = () => {
     },
   ];
 
+  const handleMessageClick = (msg) => {
+    setSelectedConversation({
+      sender: msg.sender,
+      initialMessages: [
+        { id: 1, sender: msg.sender, message: msg.message, time: msg.time },
+      ],
+    });
+  };
+
   return (
     <div className="messages-page">
-      <h1>Messages</h1>
-      <div className="messages-list">
-        {messages.map((msg) => (
-          <MessageItem key={msg.id} {...msg} />
-        ))}
-      </div>
+      {!selectedConversation ? (
+        <>
+          <h1>Messages</h1>
+          <div className="messages-list">
+            {messages.map((msg) => (
+              <div key={msg.id} onClick={() => handleMessageClick(msg)}>
+                <MessageItem {...msg} />
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <MessageLog
+          conversationId={selectedConversation.sender.name}
+          sender={selectedConversation.sender}
+          initialMessages={selectedConversation.initialMessages}
+        />
+      )}
     </div>
   );
 };

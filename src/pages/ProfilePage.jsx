@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import '../styles/Profile.css';
 import Post from '../components/ProfileFeed'; // Import the Post component
 import PostDetails from '../components/PostDetails'; // Import the PostDetails component
-import prf from '../assets/prf.jpeg'
-import p from '../assets/p.jpeg'
+import prf from '../assets/prf.jpeg';
+import p from '../assets/p.jpeg';
 
 const ProfilePage = () => {
   const user = {
@@ -68,6 +68,7 @@ const ProfilePage = () => {
   ];
 
   const [selectedPost, setSelectedPost] = useState(null);
+  const [showSidebar, setShowSidebar] = useState(false); // State to toggle sidebar visibility
 
   const handlePostClick = (post) => {
     setSelectedPost(post);
@@ -77,14 +78,29 @@ const ProfilePage = () => {
     setSelectedPost(null);
   };
 
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar); // Toggle sidebar visibility
+  };
+
+  const closeSidebar = () => {
+    setShowSidebar(false); // Close the sidebar when clicked outside
+  };
+
   return (
-    <div className="profile-page">
+    <div className="profile-page" onClick={closeSidebar}>
       {selectedPost ? (
         <PostDetails post={selectedPost} onBack={handleBackToPosts} />
       ) : (
         <>
-          {/* Left Section: Profile Details and Photos */}
-          <div className="left-section">
+          {/* Hamburger Icon for Mobile */}
+          <div className="hamburger-icon" onClick={(e) => { e.stopPropagation(); toggleSidebar(); }}>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+
+          {/* Middle Section: Posts and Photos */}
+          <div className={`middle-section ${showSidebar ? 'sidebar-open' : ''}`}>
             <div className="profile-header">
               <div className="profile-banner"></div>
               <div className="profile-info">
@@ -99,7 +115,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Photos Section */}
             <div className="photos-section">
               <h2>Photos</h2>
               <div className="photos-grid">
@@ -115,33 +130,30 @@ const ProfilePage = () => {
                   ))}
               </div>
             </div>
+
+            <div className="posts-section">
+              <h2>Posts</h2>
+              {posts.map((post) => (
+                <div key={post.id} onClick={() => handlePostClick(post)} className="post-container">
+                  <Post
+                    author={post.author}
+                    time={post.time}
+                    title={post.title}
+                    content={post.content}
+                    type={post.type}
+                    image={post.image}
+                    category={post.category}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Middle Section: Posts */}
-          <div className="middle-section">
-            <h2>Posts</h2>
-            {posts.map((post) => (
-              <div key={post.id} onClick={() => handlePostClick(post)} className="post-container">
-                <Post
-                  author={post.author}
-                  time={post.time}
-                  title={post.title}
-                  content={post.content}
-                  type={post.type}
-                  image={post.image}
-                  category={post.category}
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Right Section: Settings, Privacy, and Logout */}
-          <div className="right-section">
+          {/* Right Section: Settings and Privacy - Now as Sidebar */}
+          <div className={`right-section ${showSidebar ? 'show' : ''}`}>
             <h2>Settings & Privacy</h2>
             <ul className="settings-list">
-              <li>Edit Profile</li>
-              <li>Change Password</li>
-              <li>Privacy Settings</li>
+              <li>Settings</li>
               <li>Privacy Policy</li>
               <li>Terms of Service</li>
               <li>Help & Support</li>

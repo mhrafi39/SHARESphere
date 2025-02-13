@@ -9,7 +9,7 @@ body {
 
 /* Header */
 header {
-    background-color: #34b7f1;
+    background:linear-gradient(60deg,#28a5e2,#777);
     color: white;
     padding: 10px 20px;
     display: flex;
@@ -269,42 +269,6 @@ header nav ul li a .nav-text {
     background-color: #28a5e2;
 }
 
-/* Right Sidebar */
-.right-sidebar {
-    width: 250px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    overflow-y: auto;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.right-sidebar h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-}
-
-.right-sidebar h2 i {
-    margin-right: 10px;
-}
-
-.right-sidebar ul {
-    list-style: none;
-}
-
-.right-sidebar ul li {
-    margin-bottom: 15px;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-}
-
-.right-sidebar ul li i {
-    margin-right: 10px;
-}
-
 /* Footer */
 footer {
     background-color: #f1f1f1;
@@ -326,7 +290,7 @@ footer {
         gap: 10px; /* Reduce gap for smaller screens */
     }
 
-    .sidebar, .right-sidebar {
+    .sidebar {
         display: none; /* Hide sidebars on smaller screens */
     }
 
