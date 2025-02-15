@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AiOutlinePaperClip, AiOutlinePhone } from 'react-icons/ai';
-import { FaUserAlt } from 'react-icons/fa';
-import "../styles/MessageLog.css"
-const MessageLog = ({ sender, initialMessages }) => {
+import { AiOutlinePaperClip, AiOutlinePhone, AiOutlineInfoCircle, AiOutlineClose } from 'react-icons/ai';
+import "../styles/MessageLog.css";
+
+const MessageLog = ({ sender, initialMessages, onBack }) => {
   const [messages, setMessages] = useState(initialMessages);
   const [newMessage, setNewMessage] = useState('');
   const [showProfile, setShowProfile] = useState(false);
+  const [file, setFile] = useState(null);
   const messageEndRef = useRef(null);
 
   useEffect(() => {
@@ -13,15 +14,24 @@ const MessageLog = ({ sender, initialMessages }) => {
   }, [messages]);
 
   const sendMessage = () => {
-    if (newMessage.trim()) {
+    if (newMessage.trim() || file) {
       const newMsg = {
         id: messages.length + 1,
         sender: { name: 'You', profilePic: 'your-profile.jpg' },
         message: newMessage,
-        time: 'Just now',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        file: file ? { name: file.name, type: file.type, url: URL.createObjectURL(file) } : null,
       };
       setMessages([...messages, newMsg]);
       setNewMessage('');
+      setFile(null);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
     }
   };
 
@@ -30,62 +40,70 @@ const MessageLog = ({ sender, initialMessages }) => {
   };
 
   return (
-    <div className="message-log">
-      <div className="header">
-        <div className="profile-info" onClick={() => setShowProfile(!showProfile)}>
-          <img
-            className="profile-pic"
-            src={sender.profilePic}
-            alt={sender.name}
-          />
-          <div className="profile-details">
-            <h2>{sender.name}</h2>
-            <p>Online</p>
-          </div>
+    <div className="message-log-container">
+      <div className="chat-header">
+        <button className="back-button" onClick={onBack}>←</button>
+        <div className="sender-info">
+          <img src={sender.profilePic} alt={sender.name} className="profile-pic" />
+          <span className="sender-name">{sender.name}</span>
         </div>
-        <button className="call-btn" onClick={handleCall}>
-          <AiOutlinePhone />
-        </button>
+        <div className="header-icons">
+          <AiOutlinePhone className="icon" onClick={handleCall} />
+          <AiOutlineInfoCircle className="icon" onClick={() => setShowProfile(!showProfile)} />
+        </div>
       </div>
 
-      {showProfile && (
-        <div className="profile-popup">
-          <div className="profile-details">
-            <img
-              className="profile-pic-large"
-              src={sender.profilePic}
-              alt={sender.name}
-            />
-            <h3>{sender.name}</h3>
-            <p>{sender.name}'s profile information...</p>
-            <button className="close-btn" onClick={() => setShowProfile(false)}>Close</button>
-          </div>
+      <div className={`profile-sidebar ${showProfile ? 'open' : ''}`}>
+        <div className="sidebar-header">
+          <AiOutlineClose className="close-icon" onClick={() => setShowProfile(false)} />
+          <h3>Profile Information</h3>
         </div>
-      )}
+        <div className="profile-info">
+          <img src={sender.profilePic} alt={sender.name} className="profile-info-pic" />
+          <h3>{sender.name}</h3>
+          <p>Status: {sender.status || "Hey there! I am using WhatsApp."}</p>
+        </div>
+      </div>
 
-      <div className="messages">
+      <div className="chat-messages">
         {messages.map((msg) => (
           <div key={msg.id} className={`message ${msg.sender.name === 'You' ? 'sent' : 'received'}`}>
-            <div className="message-bubble">
-              <p>{msg.message}</p>
-              <span className="time">{msg.time}</span>
+            {msg.sender.name !== 'You' && (
+              <img src={msg.sender.profilePic} alt={msg.sender.name} className="message-profile-pic" />
+            )}
+            <div className="message-content">
+              {msg.file && (
+                <div className="file-attachment">
+                  {msg.file.type.startsWith('image/') ? (
+                    <img src={msg.file.url} alt={msg.file.name} className="file-image" />
+                  ) : (
+                    <a href={msg.file.url} download={msg.file.name} className="file-link">
+                      {msg.file.name}
+                    </a>
+                  )}
+                </div>
+              )}
+              <p className="message-text">{msg.message}</p>
+              <span className="message-time">{msg.time}</span>
             </div>
           </div>
         ))}
-        <div ref={messageEndRef} /> {/* This div ensures scroll stays at the bottom */}
+        <div ref={messageEndRef} />
       </div>
 
-      <div className="message-input">
-        <button className="attachment-btn">
-          <AiOutlinePaperClip />
-        </button>
+      <div className="chat-input">
+        <label htmlFor="file-upload" className="file-upload-label">
+          <AiOutlinePaperClip className="icon" />
+        </label>
+        <input id="file-upload" type="file" onChange={handleFileChange} style={{ display: 'none' }} />
         <input
           type="text"
+          placeholder="Type a message..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
+          onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
         />
-        <button onClick={sendMessage} className="send-btn">Send</button>
+        <button onClick={sendMessage}>Send</button>
       </div>
     </div>
   );

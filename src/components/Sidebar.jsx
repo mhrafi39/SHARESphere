@@ -1,9 +1,9 @@
 import React from 'react';
 import { FaBoxOpen, FaWifi, FaBook, FaLaptop, FaCar } from 'react-icons/fa';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen }) => {
   return (
-    <d className="sidebar">
+    <div className={`sidebar ${isOpen ? 'open' : ''}`}>
       <h2><FaBoxOpen /> Available Resources</h2>
       <ul>
         <li><FaWifi /> Free WiFi Access</li>
@@ -11,10 +11,8 @@ const Sidebar = () => {
         <li><FaLaptop /> Laptop for Rent</li>
         <li><FaCar /> Carpooling Service</li>
       </ul>
-      
       <button className="btn-view-all">View All</button>
-      
-    </d>
+    </div>
   );
 };
 

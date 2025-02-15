@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import MessageItem from '../components/MessageItem';
 import MessageLog from '../components/MessageLog';
 import '../styles/Messages.css';
+import prf from '../assets/prf.jpeg';
+import p from '../assets/p.jpeg';
 
 const MessagesPage = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);
@@ -9,15 +11,21 @@ const MessagesPage = () => {
   const messages = [
     {
       id: 1,
-      sender: { name: 'Alice Brown', profilePic: 'prf.jpeg' },
+      sender: { name: 'Alice Brown', profilePic: prf, status: 'Online' },
       message: 'Hi, are you still offering the laptop?',
-      time: '10 minutes ago',
+      time: '10:15 AM',
     },
     {
       id: 2,
-      sender: { name: 'Michael Smith', profilePic: 'prf.jpeg' },
+      sender: { name: 'Michael Smith', profilePic: prf, status: 'Offline' },
       message: 'I can lend you my laptop. When do you need it?',
-      time: '2 hours ago',
+      time: 'Yesterday',
+    },
+    {
+      id: 3,
+      sender: { name: 'John Doe', profilePic: prf, status: 'Online' },
+      message: 'Sure, let’s meet tomorrow.',
+      time: '2 days ago',
     },
   ];
 
@@ -34,20 +42,28 @@ const MessagesPage = () => {
     <div className="messages-page">
       {!selectedConversation ? (
         <>
-          <h1>Messages</h1>
-          <div className="messages-list">
-            {messages.map((msg) => (
-              <div key={msg.id} onClick={() => handleMessageClick(msg)}>
-                <MessageItem {...msg} />
-              </div>
-            ))}
+          <div className="messages-header">
+            <h1>Chats</h1>
+          </div>
+          <div className="messages-container">
+            <div className="messages-list">
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className="message-item-wrapper"
+                  onClick={() => handleMessageClick(msg)}
+                >
+                  <MessageItem {...msg} />
+                </div>
+              ))}
+            </div>
           </div>
         </>
       ) : (
         <MessageLog
-          conversationId={selectedConversation.sender.name}
           sender={selectedConversation.sender}
           initialMessages={selectedConversation.initialMessages}
+          onBack={() => setSelectedConversation(null)}
         />
       )}
     </div>

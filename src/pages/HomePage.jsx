@@ -3,13 +3,15 @@ import Sidebar from '../components/Sidebar';
 import Post from '../components/Post';
 import FilterButtons from '../components/FilterButtons';
 import Footer from '../components/Footer';
-import PostDetails from '../components/PostDetails'; // Import the PostDetails component
-import prf from '../assets/prf.jpeg'
-import p from '../assets/p.jpeg'
+import PostDetails from '../components/PostDetails';
+import prf from '../assets/prf.jpeg';
+import p from '../assets/p.jpeg';
+import { FaBars } from 'react-icons/fa';
 
 const HomePage = () => {
   const [filter, setFilter] = useState('all');
   const [selectedPost, setSelectedPost] = useState(null); // State for selected post
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar visibility
 
   const posts = [
     {
@@ -84,10 +86,22 @@ const HomePage = () => {
     setSelectedPost(null); // Go back to the list of posts
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar visibility
+  };
+
   return (
     <div className="home-page">
       <div className="main-content">
-        <Sidebar />
+        {/* Sidebar Toggle Button */}
+        <button className="sidebar-toggle" onClick={toggleSidebar}>
+          <FaBars />
+        </button>
+
+        {/* Sidebar */}
+        <Sidebar isOpen={isSidebarOpen} />
+
+        {/* Newsfeed Section */}
         <section className="newsfeed">
           {selectedPost ? (
             <PostDetails post={selectedPost} onBack={handleBackToPosts} /> // Show post details if a post is selected
