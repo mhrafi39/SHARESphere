@@ -1,0 +1,95 @@
+/* Privacy Policy Container */
+.privacy-policy-container {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+  }
+  
+  /* Page Title */
+  .ph1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Sections Wrapper */
+  .policy-section {
+    background: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Section Header */
+  .privacysection-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #5799e5;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s;
+  }
+  
+  .privacysection-header:hover {
+    background: #357ABD;
+  }
+  
+  /* Center-Aligned Section Titles */
+  .privacysection-title {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  /* Icon Alignment */
+  .privacysection-header svg {
+    margin-left: 10px;
+    font-size: 16px;
+  }
+  
+  /* Section Content */
+  .privacysection-content {
+    padding: 15px;
+    background: #ffffff;
+    font-size: 16px;
+    color: #333;
+    border-radius: 0 0 8px 8px;
+    text-align: left;
+  }
+  
+  /* List Styling */
+  .privacysection-content ul {
+    padding-left: 20px;
+  }
+  
+  .privacysection-content ul li {
+    margin-bottom: 8px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .privacy-policy-container {
+      padding: 15px;
+    }
+  
+    .privacysection-title {
+      font-size: 16px;
+    }
+  
+    .privacysection-content {
+      font-size: 14px;
+    }
+  }
+  

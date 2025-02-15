@@ -1,0 +1,113 @@
+/* General Container Styling */
+.terms-container {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+  }
+  
+  /* Page Title */
+  .termspage-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Sections Wrapper */
+  .terms-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  /* Section Styling */
+  .tos-section {
+    background: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Section Header */
+  .termssection-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #5799e5;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s;
+  }
+  
+  .termssection-header:hover {
+    background: #357ABD;
+  }
+  
+  /* Section Title */
+  .termssection-title {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  /* Icon Alignment */
+  .termsicon {
+    font-size: 16px;
+  }
+  
+  /* Section Content */
+  .termssection-content {
+    padding: 15px;
+    background: #ffffff;
+    font-size: 16px;
+    color: #333;
+    border-radius: 0 0 8px 8px;
+    text-align: left;
+  }
+  
+  /* List Styling */
+  .termssection-content ul {
+    padding-left: 20px;
+  }
+  
+  .termssection-content ul li {
+    margin-bottom: 8px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .terms-container {
+      padding: 15px;
+    }
+  
+    .termspage-title {
+      font-size: 24px;
+    }
+  
+    .termssection-header {
+      font-size: 16px;
+      padding: 12px;
+    }
+  
+    .termssection-title {
+      font-size: 16px;
+    }
+  
+    .termsicon {
+      font-size: 14px;
+    }
+  
+    .termssection-content {
+      font-size: 14px;
+    }
+  }
+  

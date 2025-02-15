@@ -4,6 +4,7 @@ import Post from '../components/ProfileFeed'; // Import the Post component
 import PostDetails from '../components/PostDetails'; // Import the PostDetails component
 import prf from '../assets/prf.jpeg';
 import p from '../assets/p.jpeg';
+import { Link } from 'react-router-dom';
 
 const ProfilePage = () => {
   const user = {
@@ -153,10 +154,10 @@ const ProfilePage = () => {
           <div className={`right-section ${showSidebar ? 'show' : ''}`}>
             <h2>Settings & Privacy</h2>
             <ul className="settings-list">
-              <li>Settings</li>
-              <li>Privacy Policy</li>
-              <li>Terms of Service</li>
-              <li>Help & Support</li>
+            <li><Link to = "/settings">Settings</Link></li>
+              <li><Link to = "/PrivacyPolicy">Privacy Policy</Link></li>
+              <li><Link to = "/TermsofService">Terms Of Service</Link></li>
+              <li><Link to = "/Help&Support">Help & Support</Link></li>
             </ul>
 
             {/* Logout Button */}

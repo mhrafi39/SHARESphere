@@ -12,6 +12,10 @@ import CreatePostPage from './pages/CreatePostPage';
 import NotificationsPage from './pages/NotificationsPAge';
 import Header from './components/Header';
 import './App.css';
+import Settings from './pages/settings';
+import PrivacyPolicyPage from './pages/PrivacyPolicy';
+import TermsOfServicePage from './pages/TermsofService';
+import HelpSupportPage from './pages/Help&Support';
 
 const App = () => {
   return (
@@ -28,6 +32,10 @@ const App = () => {
         <Route path="/messages" element={<MessagesPage />} />
         <Route path="/create-post" element={<CreatePostPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/PrivacyPolicy" element={<PrivacyPolicyPage />} />
+        <Route path="/TermsofService" element={<TermsOfServicePage />} />
+        <Route path="/Help&Support" element={<HelpSupportPage />} />
       </Routes>
     </>
   );
