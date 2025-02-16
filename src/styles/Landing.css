@@ -1,0 +1,110 @@
+/* Landing Page Styles */
+.landing-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  .landing-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .landing-content {
+    max-width: 600px;
+    color: #fff;
+    padding: 40px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+  }
+  
+  .landing-title {
+    font-size: 2.8rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+  }
+  
+  .landing-title span {
+    color: #00d4ff;
+  }
+  
+  .landing-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .landing-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .landing-btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .landing-btn-primary {
+    background: #00d4ff;
+    color: #003c57;
+    box-shadow: 0 4px 6px rgba(0, 212, 255, 0.4);
+  }
+  
+  .landing-btn-secondary {
+    background: transparent;
+    color: #00d4ff;
+    border: 2px solid #00d4ff;
+  }
+  
+  .landing-btn-primary:hover {
+    background: #003c57;
+    color: #00d4ff;
+    box-shadow: 0 4px 10px rgba(0, 212, 255, 0.6);
+  }
+  
+  .landing-btn-secondary:hover {
+    background: #00d4ff;
+    color: #003c57;
+  }
+  
+  @media (max-width: 768px) {
+    .landing-content {
+      width: 90%;
+      padding: 30px;
+    }
+  
+    .landing-title {
+      font-size: 2.2rem;
+    }
+  
+    .landing-subtitle {
+      font-size: 1rem;
+    }
+  
+    .landing-buttons {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+  
