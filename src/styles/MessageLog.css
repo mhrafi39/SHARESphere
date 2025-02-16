@@ -45,6 +45,7 @@
 .message-log-container .sender-name {
   font-size: 18px;
   font-weight: bold;
+  color: #c6f3f8;
 }
 
 .message-log-container .header-icons {

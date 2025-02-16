@@ -38,7 +38,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #5799e5;
+    background: linear-gradient(135deg, #44829c, #2b6174, #2c5364);
     color: white;
     padding: 15px;
     border-radius: 8px;
@@ -48,7 +48,7 @@
   }
   
   .termssection-header:hover {
-    background: #357ABD;
+    background: linear-gradient(135deg, #114054, #203a43, #204858);
   }
   
   /* Section Title */
