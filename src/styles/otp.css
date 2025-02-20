@@ -1,0 +1,87 @@
+/* OTP Container */
+.otp-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #f4f4f4;
+  font-family: Arial, sans-serif;
+}
+
+/* Heading */
+.otp-heading {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.otp-subtext {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* OTP Input Group */
+.otp-input-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* OTP Input */
+.otp-input {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  text-align: center;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.otp-input:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 5px rgba(0, 91, 187, 0.5);
+}
+
+/* Verify Button */
+.otp-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.otp-button:hover {
+  background: #0056b3;
+}
+
+/* Resend Button */
+.otp-resend {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 14px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.otp-resend:hover {
+  text-decoration: underline;
+}
+
+/* Message */
+.otp-message {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 15px;
+}

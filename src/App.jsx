@@ -16,6 +16,7 @@ import Settings from './pages/settings';
 import PrivacyPolicyPage from './pages/PrivacyPolicy';
 import TermsOfServicePage from './pages/TermsofService';
 import HelpSupportPage from './pages/Help&Support';
+import OTPVerification from './pages/OTP';
 
 const App = () => {
   return (
@@ -36,6 +37,8 @@ const App = () => {
         <Route path="/PrivacyPolicy" element={<PrivacyPolicyPage />} />
         <Route path="/TermsofService" element={<TermsOfServicePage />} />
         <Route path="/Help&Support" element={<HelpSupportPage />} />
+        <Route path="/otp" element={< OTPVerification/>} />
+      
       </Routes>
     </>
   );

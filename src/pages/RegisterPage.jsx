@@ -8,29 +8,29 @@ const RegisterPage = () => {
     // Define validation schema using Yup
     const validationSchema = Yup.object({
         firstName: Yup.string()
-            .required('First name is required')
-            .min(2, 'First name must be at least 2 characters'),
+            .required('First name is required*')
+            .min(2, 'First name must be at least 2 characters*'),
         lastName: Yup.string()
-            .required('Last name is required')
+            .required('Last name is required*')
             .min(2, 'Last name must be at least 2 characters'),
         emailOrPhone: Yup.string()
-            .required('Email or phone number is required')
-            .test('is-email-or-phone', 'Invalid email or phone number', value => {
+            .required('Email is required*')
+            .test('is-email-or-phone', 'Invalid email*', value => {
                 const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
                 const phoneRegex = /^\+?[1-9]\d{1,14}$/; // E.164 format
                 return emailRegex.test(value) || phoneRegex.test(value);
             }),
         password: Yup.string()
-            .required('Password is required')
-            .min(8, 'Password must be at least 8 characters'),
+            .required('Password is required*')
+            .min(8, 'Password must be at least 8 characters*'),
         birthday: Yup.date()
-            .required('Birthday is required')
-            .max(new Date(), 'Birthday cannot be in the future'),
+            .required('Birthday is required*')
+            .max(new Date(), 'Birthday cannot be in the future*'),
         gender: Yup.string()
-            .required('Gender is required'),
+            .required('Gender is required*'),
         nidPassport: Yup.mixed()
-            .required('NID or Passport is required')
-            .test('fileType', 'Only image files are allowed', value => {
+            .required('NID or Passport is required*')
+            .test('fileType', 'Only image files are allowed*', value => {
                 if (value) {
                     return value && ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
                 }
@@ -178,7 +178,7 @@ const RegisterPage = () => {
                                 <div className="error">{formik.errors.nidPassport}</div>
                             ) : null}
 
-                            <button type="submit" className="signup-btn">Sign Up</button>
+                            <button type="submit" className="signup-btn"><Link to = "/otp">Sign Up</Link></button>
                         </form>
                         <div className="login-option">
                             <p>Already have an account? <Link to="/login">Log in</Link></p>
