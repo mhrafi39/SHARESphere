@@ -1,0 +1,269 @@
+
+.message-log-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 600px;
+  background-color: #f0f0f0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto; /* Center horizontally */
+}
+
+.message-log-container .chat-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #072d5e;
+  color: white;
+}
+
+.message-log-container .back-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.message-log-container .sender-info {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.message-log-container .profile-pic {
+  width: 50px;
+  height: 50px;
+  margin-top: 8px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.message-log-container .sender-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #c6f3f8;
+}
+
+.message-log-container .header-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.message-log-container .icon {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.message-log-container .profile-sidebar {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.message-log-container .profile-sidebar.open {
+  right: 0;
+}
+
+.message-log-container .sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #07345e;
+  color: white;
+}
+
+.message-log-container .close-icon {
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.message-log-container .profile-info {
+  padding: 20px;
+  text-align: center;
+}
+
+.message-log-container .profile-info-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-top: 80px;
+  margin-bottom: 10px;
+}
+
+.message-log-container .profile-info h3 {
+  margin: 10px 0;
+  font-size: 20px;
+}
+
+.message-log-container .profile-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.message-log-container .chat-messages {
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background-color: #e5ddd5;
+}
+
+.message-log-container .message {
+  display: flex;
+  margin-bottom: 10px;
+  position: relative; /* Ensure positioning is relative for time */
+}
+
+.message-log-container .message.sent {
+  justify-content: flex-end;
+}
+
+.message-log-container .message.received {
+  justify-content: flex-start;
+}
+
+.message-log-container .message-profile-pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+  align-self: flex-end;
+}
+
+.message-log-container .message-content {
+  max-width: 60%;
+  padding: 10px;
+  border-radius: 10px;
+  position: relative;
+  padding-bottom: 20px; /* Added bottom padding to prevent overlap with message time */
+}
+
+.message-log-container .message.sent .message-content {
+  background-color: #c6f3f8;
+  margin-left: auto;
+}
+
+.message-log-container .message.received .message-content {
+  background-color: white;
+  margin-right: auto;
+}
+
+.message-log-container .message-time {
+  font-size: 12px;
+  color: #666;
+  position: absolute;
+  bottom: 5px;
+  right: 10px; /* This works for "sent" messages */
+}
+
+.message-log-container .message.received .message-time {
+  left: 10px; /* Position on the left for "received" messages */
+  right: unset; /* Unset right for "received" messages */
+}
+.chat-input button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  background-color: #07305e;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.file-upload-label {
+  cursor: pointer;
+  margin-right: 10px;
+}
+.file-image {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+.file-link {
+  color: #07305e;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-top: 1px solid #ccc;
+}
+
+.chat-input input[type="text"] {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  outline: none;
+}
+
+.chat-input button:hover {
+  background-color: #053a4f;
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+  .message-log-container{
+    width: 500px;
+  }
+  .message-log-container .profile-sidebar {
+    width: 100%;
+    right: -100%;
+  }
+
+  .message-log-container .profile-sidebar.open {
+    right: 0;
+  }
+
+  .message-log-container .chat-header {
+    padding: 10px 5px;
+  }
+
+  .message-log-container .sender-name {
+    font-size: 16px;
+  }
+
+  .message-log-container .header-icons {
+    gap: 10px;
+  }
+
+  .message-log-container .chat-input input[type="text"] {
+    padding: 8px;
+  }
+
+  .message-log-container .chat-input button {
+    padding: 8px 16px;
+  }
+
+  /* Chat List */
+  .chat-list-container .messages-header h1 {
+    font-size: 20px;
+  }
+
+  .chat-list-container .profile-pic {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px; /* Adjust margin to keep spacing consistent */
+  }
+
+  .chat-list-container .sender-name {
+    font-size: 14px;
+  }
+
+  .chat-list-container .message-preview {
+    font-size: 12px;
+  }
+}
