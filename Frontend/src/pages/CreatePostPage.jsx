@@ -40,7 +40,7 @@ const CreatePostPage = () => {
                 navigate("/");
             }
         } catch (error) {
-            console.error("Post creation error:", error);
+            console.error("Post creation error:", error.response ? error.response.data : error.message);
             alert("❌ Failed to create post. Try again.");
         }
     };

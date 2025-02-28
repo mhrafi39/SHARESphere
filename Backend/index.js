@@ -186,31 +186,32 @@ const authenticateUser = (req, res, next) => {
 
 
 
-app.get("/profile/:id", async (req, res) => {
+app.get("/profile", authenticateUser, async (req, res) => {
     try {
-        const { id } = req.params;
-
-        // Check if the user ID is valid
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "Invalid user ID format" });
+        // Ensure the user is authenticated
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: "Unauthorized. Please log in." });
         }
 
-        // Fetch the user from the database (excluding sensitive fields)
-        const user = await User.findById(id).select("-password -otp -otpExpires");
+        // Fetch the user from the database
+        const user = await User.findById(req.user.id).select("-password -otp -otpExpires");
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Fetch the posts associated with the user
+        // Fetch posts associated with the user
         const posts = await Post.find({ author: user._id }).populate("author", "firstName lastName profilePic");
 
-        // Return the user and posts
+        // Return user info and posts
         res.json({ user, posts });
     } catch (error) {
         console.error("Profile fetch error:", error);
         res.status(500).json({ message: "Server error, please try again later." });
     }
 });
+///////
+
+
 
 
 

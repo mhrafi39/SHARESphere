@@ -9,7 +9,7 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // Define validation schema using Yup
+  // Validation schema using Yup
   const validationSchema = Yup.object({
     emailOrPhone: Yup.string()
       .required("Required")
@@ -25,14 +25,11 @@ const LoginPage = () => {
 
   // Initialize Formik
   const formik = useFormik({
-    initialValues: {
-      emailOrPhone: "",
-      password: "",
-    },
+    initialValues: { emailOrPhone: "", password: "" },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoading(true);
-      setErrorMessage(""); // Reset error message
+      setErrorMessage("");
 
       try {
         const response = await fetch("http://localhost:4000/login", {
@@ -41,21 +38,20 @@ const LoginPage = () => {
           body: JSON.stringify(values),
         });
 
-        // Check if response is OK
-        if (response.ok) {
+        if (!response.ok) {
           const data = await response.json();
-
-          // Store JWT token in localStorage
-          localStorage.setItem("authToken", data.token);
-
-          // Redirect after successful login
-          navigate("/home");
-        } else {
-          const data = await response.json();
-          setErrorMessage(data.message || "Invalid credentials. Please try again.");
+          throw new Error(data.message || "Invalid credentials");
         }
+
+        const data = await response.json();
+
+        // Store JWT token in localStorage
+        localStorage.setItem("token", data.token);
+
+        // Redirect after successful login
+        navigate("/home");
       } catch (error) {
-        setErrorMessage("Server error. Please try again later.");
+        setErrorMessage(error.message || "Server error. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -81,9 +77,9 @@ const LoginPage = () => {
                 value={formik.values.emailOrPhone}
                 disabled={loading}
               />
-              {formik.touched.emailOrPhone && formik.errors.emailOrPhone ? (
+              {formik.touched.emailOrPhone && formik.errors.emailOrPhone && (
                 <div className="error">{formik.errors.emailOrPhone}</div>
-              ) : null}
+              )}
 
               <input
                 type="password"
@@ -94,9 +90,9 @@ const LoginPage = () => {
                 value={formik.values.password}
                 disabled={loading}
               />
-              {formik.touched.password && formik.errors.password ? (
+              {formik.touched.password && formik.errors.password && (
                 <div className="error">{formik.errors.password}</div>
-              ) : null}
+              )}
 
               {errorMessage && <div className="error">{errorMessage}</div>}
 

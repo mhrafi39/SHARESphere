@@ -1,38 +1,80 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Post from "../components/ProfileFeed";
 import PostDetails from "../components/PostDetails";
 import "../styles/Profile.css";
 
 const ProfilePage = () => {
-  const { id } = useParams(); // Get user ID from URL
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [newProfilePic, setNewProfilePic] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        console.log(id);
-        const response = await axios.get(`http://localhost:4000/profile/67c08e54be901809c834b485`);
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.warn("User not logged in");
+          navigate("/login");
+          return;
+        }
+
+        const response = await axios.get("http://localhost:4000/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
         setUser(response.data.user);
         setPosts(response.data.posts);
       } catch (error) {
         console.error("Error fetching profile:", error);
+        navigate("/login");
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, [id]);
+  }, [navigate]);
 
   const handlePostClick = (post) => setSelectedPost(post);
   const handleBackToPosts = () => setSelectedPost(null);
   const toggleSidebar = () => setShowSidebar(!showSidebar);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const handleProfilePicChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setNewProfilePic(URL.createObjectURL(file)); // Preview image before upload
+    const formData = new FormData();
+    formData.append("profilePic", file);
+
+    setUploading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://localhost:4000/update-profile-pic",
+        formData,
+        { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
+      );
+
+      setUser((prevUser) => ({ ...prevUser, profilePic: response.data.profilePic }));
+    } catch (error) {
+      console.error("Error uploading profile picture:", error);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (!user) return <p>User not found</p>;
@@ -53,7 +95,20 @@ const ProfilePage = () => {
             <div className="profile-header">
               <div className="profile-banner"></div>
               <div className="profile-info">
-                <img src={user.profilePic || "default-profile.png"} alt="Profile" className="profile-pic" />
+                <label htmlFor="profilePicUpload" className="profile-pic-label">
+                  <img
+                    src={newProfilePic || user.profilePic || "default-profile.png"}
+                    alt="Profile"
+                    className="profile-pic"
+                  />
+                  <input
+                    type="file"
+                    id="profilePicUpload"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleProfilePicChange}
+                  />
+                </label>
                 <h1>{user.firstName} {user.lastName}</h1>
                 <p className="profile-bio">{user.bio || "No bio available."}</p>
                 <div className="profile-stats">
@@ -61,6 +116,7 @@ const ProfilePage = () => {
                   <span><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</span>
                   <span><strong>Rating:</strong> {user.rating || "N/A"} ★</span>
                 </div>
+                {uploading && <p>Uploading...</p>}
               </div>
             </div>
 
@@ -68,7 +124,7 @@ const ProfilePage = () => {
               <h2>Photos</h2>
               <div className="photos-grid">
                 {posts.filter((post) => post.image).map((post) => (
-                  <img key={post._id} src={post.image} alt={`Post by ${post.author.firstName}`} className="user-photo" />
+                  <img key={post._id} src={post.image} alt="User post" className="user-photo" />
                 ))}
               </div>
             </div>
@@ -100,7 +156,7 @@ const ProfilePage = () => {
               <li><Link to="/Help&Support">Help & Support</Link></li>
             </ul>
 
-            <button className="logout-button" onClick={() => alert("Logged out!")}>
+            <button className="logout-button" onClick={handleLogout}>
               Log Out
             </button>
           </div>
