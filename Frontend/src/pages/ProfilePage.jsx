@@ -26,7 +26,7 @@ const ProfilePage = () => {
         }
 
         const response = await axios.get("http://localhost:4000/profile", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         setUser(response.data.user);
@@ -54,23 +54,32 @@ const ProfilePage = () => {
   const handleProfilePicChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
-    setNewProfilePic(URL.createObjectURL(file)); // Preview image before upload
+  
+    console.log("Selected file:", file); // Debugging
+    setNewProfilePic(URL.createObjectURL(file));
+  
     const formData = new FormData();
     formData.append("profilePic", file);
-
+  
     setUploading(true);
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://localhost:4000/update-profile-pic",
         formData,
-        { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
-
+  
+      console.log("Upload response:", response.data); // Debugging
       setUser((prevUser) => ({ ...prevUser, profilePic: response.data.profilePic }));
     } catch (error) {
       console.error("Error uploading profile picture:", error);
+      alert("Failed to upload profile picture. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -109,12 +118,20 @@ const ProfilePage = () => {
                     onChange={handleProfilePicChange}
                   />
                 </label>
-                <h1>{user.firstName} {user.lastName}</h1>
+                <h1>
+                  {user.firstName} {user.lastName}
+                </h1>
                 <p className="profile-bio">{user.bio || "No bio available."}</p>
                 <div className="profile-stats">
-                  <span><strong>Email:</strong> {user.emailOrPhone}</span>
-                  <span><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</span>
-                  <span><strong>Rating:</strong> {user.rating || "N/A"} ★</span>
+                  <span>
+                    <strong>Email:</strong> {user.emailOrPhone}
+                  </span>
+                  <span>
+                    <strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}
+                  </span>
+                  <span>
+                    <strong>Rating:</strong> {user.rating || "N/A"} ★
+                  </span>
                 </div>
                 {uploading && <p>Uploading...</p>}
               </div>
@@ -123,9 +140,11 @@ const ProfilePage = () => {
             <div className="photos-section">
               <h2>Photos</h2>
               <div className="photos-grid">
-                {posts.filter((post) => post.image).map((post) => (
-                  <img key={post._id} src={post.image} alt="User post" className="user-photo" />
-                ))}
+                {posts
+                  .filter((post) => post.image)
+                  .map((post) => (
+                    <img key={post._id} src={post.image} alt="User post" className="user-photo" />
+                  ))}
               </div>
             </div>
 
@@ -150,10 +169,18 @@ const ProfilePage = () => {
           <div className={`right-section ${showSidebar ? "show" : ""}`}>
             <h2>Settings & Privacy</h2>
             <ul className="settings-list">
-              <li><Link to="/settings">Settings</Link></li>
-              <li><Link to="/PrivacyPolicy">Privacy Policy</Link></li>
-              <li><Link to="/TermsofService">Terms Of Service</Link></li>
-              <li><Link to="/Help&Support">Help & Support</Link></li>
+              <li>
+                <Link to="/settings">Settings</Link>
+              </li>
+              <li>
+                <Link to="/PrivacyPolicy">Privacy Policy</Link>
+              </li>
+              <li>
+                <Link to="/TermsofService">Terms Of Service</Link>
+              </li>
+              <li>
+                <Link to="/Help&Support">Help & Support</Link>
+              </li>
             </ul>
 
             <button className="logout-button" onClick={handleLogout}>

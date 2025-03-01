@@ -1,0 +1,119 @@
+
+
+.admin-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.admin-page h1 {
+    text-align: center;
+    color: #333;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.admin-page h2 {
+    color: #555;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.no-users {
+    text-align: center;
+    color: #777;
+    font-size: 1.2rem;
+}
+
+/* User List */
+.user-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.user-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.user-info {
+    margin-bottom: 15px;
+}
+
+.user-info h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.user-info p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 1rem;
+}
+
+/* NID/Passport Image */
+.nid-passport img {
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+/* Buttons */
+.actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.approve-btn,
+.reject-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.approve-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.approve-btn:hover {
+    background-color: #45a049;
+}
+
+.reject-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.reject-btn:hover {
+    background-color: #e53935;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .user-list {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-page h1 {
+        font-size: 2rem;
+    }
+
+    .admin-page h2 {
+        font-size: 1.5rem;
+    }
+}

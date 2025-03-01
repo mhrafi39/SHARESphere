@@ -9,6 +9,7 @@ const CreatePostPage = () => {
     const [type, setType] = useState("Lend");
     const [category, setCategory] = useState("");
     const [image, setImage] = useState(null);
+    const [uploading, setUploading] = useState(false); // Loading state for upload
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -17,31 +18,37 @@ const CreatePostPage = () => {
         const token = localStorage.getItem("token");
         if (!token) {
             alert("⚠️ You must be logged in to create a post.");
+            navigate("/login");
             return;
         }
 
+        // Create FormData object
         const formData = new FormData();
         formData.append("title", title);
         formData.append("content", content);
         formData.append("type", type);
         formData.append("category", category);
-        if (image) formData.append("image", image);
+        if (image) formData.append("image", image); // Append image file if exists
+
+        setUploading(true); // Start loading
 
         try {
             const response = await axios.post("http://localhost:4000/posts", formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data",
+                    "Content-Type": "multipart/form-data", // Required for file uploads
                 },
             });
 
             if (response.status === 201) {
                 alert("✅ Post created successfully!");
-                navigate("/");
+                navigate("/"); // Redirect to home page
             }
         } catch (error) {
             console.error("Post creation error:", error.response ? error.response.data : error.message);
-            alert("❌ Failed to create post. Try again.");
+            alert("❌ Failed to create post. Please try again.");
+        } finally {
+            setUploading(false); // Stop loading
         }
     };
 
@@ -52,11 +59,20 @@ const CreatePostPage = () => {
                 <form onSubmit={handleSubmit} className="post-form">
                     <div className="form-group">
                         <label>Title</label>
-                        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                        />
                     </div>
                     <div className="form-group">
                         <label>Content</label>
-                        <textarea value={content} onChange={(e) => setContent(e.target.value)} required />
+                        <textarea
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            required
+                        />
                     </div>
                     <div className="form-group">
                         <label>Type</label>
@@ -69,13 +85,24 @@ const CreatePostPage = () => {
                     </div>
                     <div className="form-group">
                         <label>Category</label>
-                        <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required />
+                        <input
+                            type="text"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                            required
+                        />
                     </div>
                     <div className="form-group">
                         <label>Upload Image</label>
-                        <input type="file" onChange={(e) => setImage(e.target.files[0])} accept="image/*" />
+                        <input
+                            type="file"
+                            onChange={(e) => setImage(e.target.files[0])}
+                            accept="image/*"
+                        />
                     </div>
-                    <button type="submit" className="submit-btn">Create Post</button>
+                    <button type="submit" className="submit-btn" disabled={uploading}>
+                        {uploading ? "Uploading..." : "Create Post"}
+                    </button>
                 </form>
             </div>
         </div>

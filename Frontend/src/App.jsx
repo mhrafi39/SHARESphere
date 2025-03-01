@@ -17,10 +17,12 @@ import PrivacyPolicyPage from './pages/PrivacyPolicy';
 import TermsOfServicePage from './pages/TermsofService';
 import HelpSupportPage from './pages/Help&Support';
 import OTPVerification from './pages/OTP';
+import AdminPage from './pages/AdminPage';
 
 const App = () => {
   return (
     <>
+    
       <Header/>
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -38,7 +40,7 @@ const App = () => {
         <Route path="/TermsofService" element={<TermsOfServicePage />} />
         <Route path="/Help&Support" element={<HelpSupportPage />} />
         <Route path="/otp" element={< OTPVerification/>} />
-      
+        <Route path="/admin" element={<AdminPage/>}/>
       </Routes>
     </>
   );

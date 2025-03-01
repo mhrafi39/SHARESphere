@@ -2,11 +2,15 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import toast styles
 import "../styles/Auth.css";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
     const [serverError, setServerError] = useState("");
+    const [uploading, setUploading] = useState(false);
 
     // Validation schema
     const validationSchema = Yup.object({
@@ -38,27 +42,40 @@ const RegisterPage = () => {
         validationSchema,
         onSubmit: async (values) => {
             setServerError("");
-
-            const formData = new FormData();
-            Object.keys(values).forEach((key) => {
-                formData.append(key, values[key]);
-            });
+            setUploading(true);
 
             try {
-                const response = await fetch("http://localhost:4000/register", {
-                    method: "POST",
-                    body: formData,
+                const formData = new FormData();
+                Object.keys(values).forEach((key) => {
+                    formData.append(key, values[key]);
                 });
 
-                const data = await response.json();
+                const response = await axios.post("http://localhost:4000/register", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
 
-                if (response.ok) {
+                if (response.status === 200) {
                     navigate("/otp", { state: { email: values.emailOrPhone } });
-                } else {
-                    setServerError(data.message || "Registration failed. Try again.");
                 }
             } catch (error) {
-                setServerError("Something went wrong. Please try again later.");
+                console.error("Registration error:", error.response ? error.response.data : error.message);
+                setServerError(error.response?.data?.message || "Registration failed. Try again.");
+
+                // Show toast if user already exists
+                if (error.response?.data?.message === "An account with this email or phone number already exists") {
+                    toast.error("An account with this email or phone number already exists", {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+                }
+            } finally {
+                setUploading(false);
             }
         },
     });
@@ -66,47 +83,102 @@ const RegisterPage = () => {
     return (
         <div className="main">
             <div className="before">
-            <div className="container">
-        
+                <div className="container">
+                    <div className="form-container">
+                        <div className="header">
+                            <h1>SHARESphere</h1>
+                            <p>Sign up and start sharing!</p>
+                        </div>
 
-        <div className="form-container">
-            <div className="header">
-            <h1>SHARESphere</h1>
-            <p>Sign up and start sharing!</p>
-            </div>
-            
-            {serverError && <div className="error-message">{serverError}</div>}
+                        {serverError && <div className="error-message">{serverError}</div>}
 
-            <form className="signup-form" onSubmit={formik.handleSubmit}>
-                <div className="name-fields">
-                <input type="text" className="firstName" placeholder="First Name" {...formik.getFieldProps("firstName")} />
-                <input type="text" className="lastName" placeholder="Last Name" {...formik.getFieldProps("lastName")} />
+                        <form className="signup-form" onSubmit={formik.handleSubmit}>
+                            <div className="name-fields">
+                                <input
+                                    type="text"
+                                    className="firstName"
+                                    placeholder="First Name"
+                                    {...formik.getFieldProps("firstName")}
+                                />
+                                {formik.touched.firstName && formik.errors.firstName && (
+                                    <div className="error-message">{formik.errors.firstName}</div>
+                                )}
+                                <input
+                                    type="text"
+                                    className="lastName"
+                                    placeholder="Last Name"
+                                    {...formik.getFieldProps("lastName")}
+                                />
+                                {formik.touched.lastName && formik.errors.lastName && (
+                                    <div className="error-message">{formik.errors.lastName}</div>
+                                )}
+                            </div>
+
+                            <input
+                                type="text"
+                                name="emailOrPhone"
+                                placeholder="Email or Phone"
+                                {...formik.getFieldProps("emailOrPhone")}
+                            />
+                            {formik.touched.emailOrPhone && formik.errors.emailOrPhone && (
+                                <div className="error-message">{formik.errors.emailOrPhone}</div>
+                            )}
+
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                {...formik.getFieldProps("password")}
+                            />
+                            {formik.touched.password && formik.errors.password && (
+                                <div className="error-message">{formik.errors.password}</div>
+                            )}
+
+                            <input
+                                type="date"
+                                name="birthday"
+                                {...formik.getFieldProps("birthday")}
+                            />
+                            {formik.touched.birthday && formik.errors.birthday && (
+                                <div className="error-message">{formik.errors.birthday}</div>
+                            )}
+
+                            <label>Gender:</label>
+                            <select className="gender" {...formik.getFieldProps("gender")}>
+                                <option value="">Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                            {formik.touched.gender && formik.errors.gender && (
+                                <div className="error-message">{formik.errors.gender}</div>
+                            )}
+
+                            <label>NID/Passport (Image)</label>
+                            <input
+                                type="file"
+                                className="nidPassport"
+                                accept="image/*"
+                                onChange={(event) => formik.setFieldValue("nidPassport", event.currentTarget.files[0])}
+                            />
+                            {formik.touched.nidPassport && formik.errors.nidPassport && (
+                                <div className="error-message">{formik.errors.nidPassport}</div>
+                            )}
+
+                            <button type="submit" className="signup-btn" disabled={uploading}>
+                                {uploading ? "Registering..." : "Register"}
+                            </button>
+                        </form>
+
+                        <div className="login-option">
+                            <p>Already have an account? <Link to="/login">Log in</Link></p>
+                        </div>
+                    </div>
                 </div>
-
-                <input type="text" name="emailOrPhone" placeholder="Email or Phone" {...formik.getFieldProps("emailOrPhone")} />
-                <input type="password" name="password" placeholder="Password" {...formik.getFieldProps("password")} />
-                <input type="date" name="birthday" {...formik.getFieldProps("birthday")} />
-
-                <label>Gender:</label>
-                <select className="gender" {...formik.getFieldProps("gender")}>
-                    <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="custom">Custom</option>
-                </select>
-
-                <label>NID/Passport (Image)</label>
-                <input type="file" className="nidPassport" accept="image/*" onChange={(event) => formik.setFieldValue("nidPassport", event.currentTarget.files[0])} />
-
-                <button type="submit" className="signup-btn">Register</button>
-            </form>
-            <div className="login-option">
-
-            <p>Already have an account? <Link to="/login">Log in</Link></p>
             </div>
-        </div>
-        </div>
-        </div>
+
+            {/* Toast container */}
+            <ToastContainer />
         </div>
     );
 };
