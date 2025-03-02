@@ -42,7 +42,7 @@ const CreatePostPage = () => {
 
             if (response.status === 201) {
                 alert("✅ Post created successfully!");
-                navigate("/"); // Redirect to home page
+                navigate("/home"); // Redirect to home page
             }
         } catch (error) {
             console.error("Post creation error:", error.response ? error.response.data : error.message);

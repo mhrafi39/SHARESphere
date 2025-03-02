@@ -108,16 +108,45 @@ app.post("/register", upload.single("nidPassport"), async (req, res) => {
   try {
     // Check if the user already exists
     const existingUser = await User.findOne({ emailOrPhone });
+
     if (existingUser) {
-      return res.status(400).json({ message: "An account with this email or phone number already exists" });
+      // If the user is already verified, prevent registration
+      if (existingUser.verified) {
+        return res.status(400).json({ message: "An account with this email or phone number already exists and is verified." });
+      }
+
+      // If the user exists but is not verified, allow re-registration (e.g., resend OTP)
+      const nidPassportUrl = await uploadToCloudinary(req.file);
+      const otp = generateOTP();
+      const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes validity
+      const hashedPassword = await hashPassword(password);
+
+      // Update the existing user with new details
+      await User.findOneAndUpdate(
+        { emailOrPhone },
+        {
+          firstName,
+          lastName,
+          password: hashedPassword,
+          birthday,
+          gender,
+          nidPassport: nidPassportUrl,
+          otp,
+          otpExpires,
+          verified: false,
+        }
+      );
+
+      // Send OTP via email
+      await sendOTP(emailOrPhone, otp);
+
+      return res.json({ message: "OTP sent successfully", userId: existingUser._id });
     }
 
-    // Upload NID/Passport to Cloudinary
+    // If the user does not exist, proceed with registration
     const nidPassportUrl = await uploadToCloudinary(req.file);
-
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes validity
-
     const hashedPassword = await hashPassword(password);
 
     const newUser = await User.create({
@@ -134,41 +163,53 @@ app.post("/register", upload.single("nidPassport"), async (req, res) => {
     });
 
     // Send OTP via email
-    const mailOptions = {
-      from: `"SHARESphere" <${process.env.EMAIL_USER}>`,
-      to: emailOrPhone,
-      subject: "🔐 Your OTP Code for SHARESphere",
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
-          <h2 style="text-align: center; color: #333;">🔒 Your OTP Code</h2>
-          <p style="font-size: 16px; color: #555;">
-            Hello, <br><br>
-            Thank you for registering on <b>SHARESphere</b>. To verify your account, please use the OTP code below:
-          </p>
-          <div style="text-align: center; padding: 15px; background-color: #fff; border-radius: 5px; font-size: 22px; font-weight: bold; color: #333; border: 2px dashed #4CAF50;">
-            ${otp}
-          </div>
-          <p style="font-size: 16px; color: #555;">
-            This OTP will expire in <b>10 minutes</b>. Please do not share this code with anyone.
-          </p>
-          <hr style="border: none; height: 1px; background-color: #ddd; margin: 20px 0;">
-          <p style="text-align: center; font-size: 14px; color: #777;">
-            If you didn't request this, please ignore this email.<br>
-            Need help? Contact our support team at <a href="mailto:support@sharesphere.com" style="color: #4CAF50;">support@sharesphere.com</a>
-          </p>
-        </div>
-      `,
-    };
+    await sendOTP(emailOrPhone, otp);
 
-    transporter.sendMail(mailOptions, (error) => {
-      if (error) return res.status(500).json({ message: "Failed to send OTP" });
-      res.json({ message: "OTP sent successfully", userId: newUser._id });
-    });
+    res.json({ message: "OTP sent successfully", userId: newUser._id });
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).json({ message: "Registration failed" });
   }
 });
+
+// Reusable function to send OTP
+const sendOTP = async (emailOrPhone, otp) => {
+  const mailOptions = {
+    from: `"SHARESphere" <${process.env.EMAIL_USER}>`,
+    to: emailOrPhone,
+    subject: "🔐 Your OTP Code for SHARESphere",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
+        <h2 style="text-align: center; color: #333;">🔒 Your OTP Code</h2>
+        <p style="font-size: 16px; color: #555;">
+          Hello, <br><br>
+          Thank you for registering on <b>SHARESphere</b>. To verify your account, please use the OTP code below:
+        </p>
+        <div style="text-align: center; padding: 15px; background-color: #fff; border-radius: 5px; font-size: 22px; font-weight: bold; color: #333; border: 2px dashed #4CAF50;">
+          ${otp}
+        </div>
+        <p style="font-size: 16px; color: #555;">
+          This OTP will expire in <b>10 minutes</b>. Please do not share this code with anyone.
+        </p>
+        <hr style="border: none; height: 1px; background-color: #ddd; margin: 20px 0;">
+        <p style="text-align: center; font-size: 14px; color: #777;">
+          If you didn't request this, please ignore this email.<br>
+          Need help? Contact our support team at <a href="mailto:support@sharesphere.com" style="color: #4CAF50;">support@sharesphere.com</a>
+        </p>
+      </div>
+    `,
+  };
+
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
 
 // Verify OTP
 app.post("/verify-otp", async (req, res) => {
@@ -310,6 +351,123 @@ app.get("/posts/:id", async (req, res) => {
   } catch (error) {
     console.error("Post fetch error:", error);
     res.status(500).json({ message: "Server error, please try again later." });
+  }
+});
+
+// ... (Previous imports and setup remain the same)
+
+// Update Profile Settings
+app.put("/profile", authenticateUser, async (req, res) => {
+  const { firstName, lastName, bio } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Update profile fields
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.bio = bio || user.bio;
+
+    await user.save();
+    res.json({ message: "✅ Profile updated successfully!", user }); // Return updated user
+  } catch (error) {
+    console.error("Profile update error:", error);
+    res.status(500).json({ message: "❌ Server error, please try again later." });
+  }
+});
+
+// Change Password
+app.put("/change-password", authenticateUser, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Current password is incorrect" });
+
+    // Hash and update new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+
+    await user.save();
+    res.json({ message: "✅ Password changed successfully!" });
+  } catch (error) {
+    console.error("Password change error:", error);
+    res.status(500).json({ message: "❌ Server error, please try again later." });
+  }
+});
+
+// Update Notification Preferences
+app.put("/notifications", authenticateUser, async (req, res) => {
+  const { email, sms, push } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Update notification preferences
+    user.notifications = { email, sms, push };
+    await user.save();
+
+    res.json({ message: "✅ Notification preferences updated successfully!", notifications: user.notifications });
+  } catch (error) {
+    console.error("Notification update error:", error);
+    res.status(500).json({ message: "❌ Server error, please try again later." });
+  }
+});
+
+// Update Privacy Settings
+app.put("/privacy", authenticateUser, async (req, res) => {
+  const { showProfile, showActivity, shareResourcesPublicly } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Update privacy settings
+    user.privacy = { showProfile, showActivity, shareResourcesPublicly };
+    await user.save();
+
+    res.json({ message: "✅ Privacy settings updated successfully!", privacy: user.privacy });
+  } catch (error) {
+    console.error("Privacy update error:", error);
+    res.status(500).json({ message: "❌ Server error, please try again later." });
+  }
+});
+
+// Update Theme Customization
+app.put("/theme", authenticateUser, async (req, res) => {
+  const { mode, accentColor } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Update theme settings
+    user.theme = { mode, accentColor };
+    await user.save();
+
+    res.json({ message: "✅ Theme updated successfully!", theme: user.theme });
+  } catch (error) {
+    console.error("Theme update error:", error);
+    res.status(500).json({ message: "❌ Server error, please try again later." });
+  }
+});
+
+// Delete Account
+app.delete("/delete-account", authenticateUser, async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ message: "✅ Account deleted successfully!" });
+  } catch (error) {
+    console.error("Account deletion error:", error);
+    res.status(500).json({ message: "❌ Server error, please try again later." });
   }
 });
 

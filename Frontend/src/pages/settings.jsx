@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import '../styles/settings.css';
+import React, { useState, useEffect } from "react";
+import "../styles/settings.css";
 
 const SettingsPage = () => {
   // State for notification preferences
@@ -18,45 +18,54 @@ const SettingsPage = () => {
 
   // State for profile settings
   const [profile, setProfile] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    bio: 'I love sharing resources!',
-    profileVisibility: 'public',
+    firstName: "John",
+    lastName: "Doe",
+    bio: "I love sharing resources!",
   });
 
   // State for password change
   const [passwords, setPasswords] = useState({
-    currentPassword: '',
-    newPassword: '',
-  });
-
-  // State for resource sharing preferences
-  const [resourceSharing, setResourceSharing] = useState({
-    autoApproveRequests: false,
-    allowComments: true,
-    maxResourceUploadSize: 100, // in MB
+    currentPassword: "",
+    newPassword: "",
   });
 
   // State for theme customization
   const [theme, setTheme] = useState({
-    mode: 'light',
-    accentColor: '#4CAF50',
+    mode: "light",
+    accentColor: "#4CAF50",
   });
 
-  // Handlers for notification preferences
-  const handleNotificationChange = (type) => {
-    setNotifications((prev) => ({
-      ...prev,
-      [type]: !prev[type],
-    }));
-  };
+  // Fetch user data on component mount
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
-  // Handlers for privacy settings
-  const handlePrivacyChange = (type) => {
-    setPrivacy((prev) => ({
-      ...prev,
-      [type]: !prev[type],
-    }));
+  // Fetch user data from the backend
+  const fetchUserData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:4000/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+
+      const data = await response.json();
+      setProfile({
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        bio: data.user.bio,
+      });
+      setNotifications(data.user.notifications || { email: true, sms: false, push: true });
+      setPrivacy(data.user.privacy || { showProfile: true, showActivity: false, shareResourcesPublicly: true });
+      setTheme(data.user.theme || { mode: "light", accentColor: "#4CAF50" });
+    } catch (error) {
+      alert("Error fetching user data. Please try again.");
+    }
   };
 
   // Handlers for profile settings
@@ -77,12 +86,19 @@ const SettingsPage = () => {
     }));
   };
 
-  // Handlers for resource sharing preferences
-  const handleResourceSharingChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setResourceSharing((prev) => ({
+  // Handlers for notification preferences
+  const handleNotificationChange = (type) => {
+    setNotifications((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [type]: !prev[type],
+    }));
+  };
+
+  // Handlers for privacy settings
+  const handlePrivacyChange = (type) => {
+    setPrivacy((prev) => ({
+      ...prev,
+      [type]: !prev[type],
     }));
   };
 
@@ -93,6 +109,129 @@ const SettingsPage = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  // Save profile settings
+  const saveProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:4000/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(profile),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to update profile");
+      }
+
+      const data = await response.json();
+      alert("Profile updated successfully!");
+      setProfile(data.user); // Update state with the new data
+    } catch (error) {
+      alert(error.message || "Failed to update profile. Please try again.");
+    }
+  };
+
+  // Change password
+  const changePassword = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:4000/change-password", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(passwords),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to change password");
+      }
+
+      alert("Password changed successfully!");
+      setPasswords({ currentPassword: "", newPassword: "" });
+    } catch (error) {
+      alert(error.message || "Failed to change password. Please try again.");
+    }
+  };
+
+  // Save notification preferences
+  const saveNotifications = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:4000/notifications", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(notifications),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to update notifications");
+      }
+
+      alert("Notification preferences updated successfully!");
+    } catch (error) {
+      alert(error.message || "Failed to update notifications. Please try again.");
+    }
+  };
+
+  // Save privacy settings
+  const savePrivacy = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:4000/privacy", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(privacy),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to update privacy settings");
+      }
+
+      alert("Privacy settings updated successfully!");
+    } catch (error) {
+      alert(error.message || "Failed to update privacy settings. Please try again.");
+    }
+  };
+
+  // Save theme customization
+  const saveTheme = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:4000/theme", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(theme),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to update theme");
+      }
+
+      alert("Theme updated successfully!");
+    } catch (error) {
+      alert(error.message || "Failed to update theme. Please try again.");
+    }
   };
 
   return (
@@ -134,20 +273,9 @@ const SettingsPage = () => {
             />
           </label>
         </div>
-        <div className="setting-option">
-          <label>
-            Profile Visibility:
-            <select
-              name="profileVisibility"
-              value={profile.profileVisibility}
-              onChange={handleProfileChange}
-            >
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-              <option value="friends-only">Friends Only</option>
-            </select>
-          </label>
-        </div>
+        <button className="save-btn" onClick={saveProfile}>
+          Save Profile
+        </button>
       </div>
 
       {/* Password Change Section */}
@@ -175,7 +303,9 @@ const SettingsPage = () => {
             />
           </label>
         </div>
-        <button className="save-password-btn">Change Password</button>
+        <button className="save-btn" onClick={changePassword}>
+          Change Password
+        </button>
       </div>
 
       {/* Notification Preferences Section */}
@@ -193,6 +323,9 @@ const SettingsPage = () => {
             </label>
           </div>
         ))}
+        <button className="save-btn" onClick={saveNotifications}>
+          Save Notifications
+        </button>
       </div>
 
       {/* Privacy Settings Section */}
@@ -206,10 +339,13 @@ const SettingsPage = () => {
                 checked={privacy[key]}
                 onChange={() => handlePrivacyChange(key)}
               />
-              {key.replace(/([A-Z])/g, ' $1')}
+              {key.replace(/([A-Z])/g, " $1")}
             </label>
           </div>
         ))}
+        <button className="save-btn" onClick={savePrivacy}>
+          Save Privacy Settings
+        </button>
       </div>
 
       {/* Theme Customization Section */}
@@ -235,6 +371,9 @@ const SettingsPage = () => {
             />
           </label>
         </div>
+        <button className="save-btn" onClick={saveTheme}>
+          Save Theme
+        </button>
       </div>
 
       {/* Account Management Section */}
