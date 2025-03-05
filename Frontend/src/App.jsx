@@ -18,6 +18,7 @@ import TermsOfServicePage from './pages/TermsofService';
 import HelpSupportPage from './pages/Help&Support';
 import OTPVerification from './pages/OTP';
 import AdminPage from './pages/AdminPage';
+import SearchResults from './pages/SearchResults';
 
 const App = () => {
   return (
@@ -41,6 +42,7 @@ const App = () => {
         <Route path="/Help&Support" element={<HelpSupportPage />} />
         <Route path="/otp" element={< OTPVerification/>} />
         <Route path="/admin" element={<AdminPage/>}/>
+        <Route path="/search" element={<SearchResults />} />
       </Routes>
     </>
   );

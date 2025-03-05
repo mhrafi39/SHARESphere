@@ -1,51 +1,39 @@
-import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FaHome, FaPlus, FaEnvelope, FaUser, FaSearch } from 'react-icons/fa';
 
 const Header = () => {
-  const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?category=${searchQuery}`);
+    }
+  };
 
   return (
     <header>
       <div className="logo">SHARESphere</div>
       <div className="search-container">
-        <input type="text" placeholder="Search resources..." className="search-bar" />
-        <button className="search-btn"><FaSearch /></button>
+        <input
+          type="text"
+          placeholder="Search by category..."
+          className="search-bar"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button className="search-btn" onClick={handleSearch}>
+          <FaSearch />
+        </button>
       </div>
       <nav>
         <ul>
-          <li>
-            <NavLink
-              to="/home"
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              <FaHome /> <span className="nav-text">Home</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/create-post"
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              <FaPlus /> <span className="nav-text">Post</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/messages"
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              <FaEnvelope /> <span className="nav-text">Messages</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/profile"
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              <FaUser /> <span className="nav-text">Profile</span>
-            </NavLink>
-          </li>
+          <li><NavLink to="/home"><FaHome /> <span>Home</span></NavLink></li>
+          <li><NavLink to="/create-post"><FaPlus /> <span>Post</span></NavLink></li>
+          <li><NavLink to="/messages"><FaEnvelope /> <span>Messages</span></NavLink></li>
+          <li><NavLink to="/profile"><FaUser /> <span>Profile</span></NavLink></li>
         </ul>
       </nav>
     </header>

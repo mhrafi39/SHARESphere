@@ -3,13 +3,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 80px);
-  background-color: #f5f5f5;
+  height: calc(100vh - 50px);
+  background:linear-gradient(90deg, #9cc1cf, #346d80, #1b4f6585);
   padding: 20px;
 }
 
 .create-post-container {
-  background-color: #ffffff;
+  background-color: #3333335b;
+
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 30px;
@@ -21,7 +22,7 @@ h1 {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 20px;
-  color: #333;
+  color: #f0e9e9;
   text-align: center;
 }
 
@@ -41,7 +42,7 @@ h1 {
 label {
   font-size: 14px;
   font-weight: 500;
-  color: #555;
+  color: #e8dede;
 }
 
 input[type="text"],
@@ -50,15 +51,18 @@ select {
   padding: 12px;
   border: 1px solid #f6f4f4;
   border-radius: 8px;
+  color: #e8dede;
   font-size: 14px;
   outline: none;
   transition: border-color 0.3s ease;
+  background-color: #346d8067;
 }
 
 input[type="text"]:focus,
 textarea:focus,
 select:focus {
   border-color: #007bff;
+  color: #e8dede;
 }
 
 textarea {

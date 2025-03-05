@@ -376,6 +376,39 @@ app.put("/profile", authenticateUser, async (req, res) => {
     res.status(500).json({ message: "❌ Server error, please try again later." });
   }
 });
+// Search Posts by Category
+app.get('/posts/search', async (req, res) => {
+  console.log('🔍 Search route hit!'); 
+
+  const { category, title, content } = req.query; // Allow multiple filters
+
+  if (!category && !title && !content) {
+    return res.status(400).json({ message: "At least one search parameter is required" });
+  }
+
+  try {
+    // Build search query dynamically
+    const searchQuery = {};
+    
+    if (category) searchQuery.category = { $regex: new RegExp(category, 'i') };
+    if (title) searchQuery.title = { $regex: new RegExp(title, 'i') };
+    if (content) searchQuery.content = { $regex: new RegExp(content, 'i') };
+
+    const posts = await Post.find(searchQuery).populate("author", "firstName lastName profilePic");
+    
+    console.log('🔎 Search Results:', posts);
+    res.json(posts.length > 0 ? posts : []); // Return an empty array if no results
+  } catch (error) {
+    console.error("❌ Search Error:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
+
+
+
+
 
 // Change Password
 app.put("/change-password", authenticateUser, async (req, res) => {

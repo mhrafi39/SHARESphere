@@ -10,7 +10,7 @@
   top: 0px;
   left: 0px;
   height: 250px;
-  background:linear-gradient(45deg,#9003cd,#081bc7);
+  background:linear-gradient(135deg, #3c748b, #346d80, #1b4f65);
   width: 100%;
   justify-content: center;
   display: flex;
@@ -26,6 +26,7 @@
   max-width: 600px;
   width: 100%;
   padding: 20px;
+  
 }
 
 .header {
@@ -36,7 +37,7 @@
 
 .header h1 {
   font-size: 2rem;
-  color: #470dac;
+  color: #ece7f4;
   margin-bottom: 10px;
 }
 
@@ -47,7 +48,7 @@
 
 .form-container {
   margin-top: 50px;
-  background-color: #fff;
+  background:linear-gradient(90deg, #9cc1cf61, #346d8043, #1b4f6585);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -129,7 +130,7 @@
 .login-btn,
 .signup-btn,
 .reset-password-btn {
-  background-color: #0f93bb;
+  background-color: #097191;
   color: #fff;
   padding: 10px;
   border: none;
@@ -142,15 +143,16 @@
 }
 
 .login-btn:hover {
-  background-color: #166fe5;
+  background: linear-gradient(135deg, #030b0f, #9eafb4, #1b4f65);
 }
 
 .signup-btn {
-  background-color: #42b72a;
+    background: linear-gradient(135deg, #3c748b, #346d80, #1b4f65);
 }
 
 .signup-btn:hover {
-  background-color: #36a420;
+    background: linear-gradient(135deg, #030b0f, #9eafb4, #1b4f65);
+
 }
 
 .reset-password-btn {

@@ -10,7 +10,7 @@ body {
   
   /* Header */
   header {
-    background: linear-gradient(135deg, #25566b, #134353, #143645);
+    background:linear-gradient(135deg, #326174, #346d80, #1b4f65);
     color: white;
     padding: 10px 20px;
     display: flex;
@@ -25,7 +25,7 @@ body {
   header .logo {
     font-size: 24px;
     font-weight: bold;
-    margin-right: 20px;
+    margin-right: 180px;
     color: #f3ecec;
     letter-spacing: 1px;
 }
@@ -70,6 +70,14 @@ header .search-bar {
   
   header nav ul li {
     margin: 0 10px;
+    
+  }
+  header nav ul li:hover {
+    margin: 0 10px;
+    padding: 2px;
+    background-color: #34b8f158;
+    border-radius: 20px;
+    
   }
   
   header nav ul li a {
@@ -81,12 +89,16 @@ header .search-bar {
   }
   
   header nav ul li a i {
-    margin-right: 5px;
+    margin-right: 10px;
   }
   
   header nav ul li a .nav-text {
     display: inline;
     margin-left: 10px;
+  }
+
+  header span{
+    margin-left: 5px;
   }
   
   /* Main content */
