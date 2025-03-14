@@ -3,7 +3,7 @@ import MessageItem from '../components/MessageItem';
 import MessageLog from '../components/MessageLog';
 import '../styles/Messages.css';
 import prf from '../assets/prf.jpeg';
-import p from '../assets/p.jpeg';
+
 
 const MessagesPage = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);

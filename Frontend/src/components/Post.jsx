@@ -7,7 +7,10 @@ const Post = ({ author, time, title, content, type, image, price, category }) =>
       <div className="post-header">
         <img src={author.profilePic} alt="Profile" className="profile-pic" />
         <div className="post-author">
-          <span className="author-name">{author.name}</span>
+          {/* Display first name and last name */}
+          <span className="author-name">
+            {author.firstName} {author.lastName}
+          </span>
           <span className="post-time">{time}</span>
         </div>
       </div>

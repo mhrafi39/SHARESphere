@@ -54,6 +54,11 @@ const UserSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("User", UserSchema);
+const CommentSchema = new mongoose.Schema({
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Reference to the User model
+  text: String,
+  time: { type: Date, default: Date.now },
+});
 
 // Post Schema
 const PostSchema = new mongoose.Schema({
@@ -64,6 +69,7 @@ const PostSchema = new mongoose.Schema({
   type: String,
   category: String,
   image: String, // Cloudinary URL
+  comments: [CommentSchema], // Array of comments
 });
 
 const Post = mongoose.model("Post", PostSchema);
@@ -344,13 +350,57 @@ app.get("/posts", async (req, res) => {
 // Get Single Post
 app.get("/posts/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate("author", "firstName lastName profilePic");
+    const post = await Post.findById(req.params.id)
+      .populate("author", "firstName lastName profilePic")
+      .populate("comments.author", "firstName lastName profilePic"); // Populate comment authors
+
     if (!post) return res.status(404).json({ message: "Post not found" });
 
     res.json(post);
   } catch (error) {
     console.error("Post fetch error:", error);
     res.status(500).json({ message: "Server error, please try again later." });
+  }
+});
+
+app.post("/posts/:id/comments", authenticateUser, async (req, res) => {
+  const { text } = req.body;
+  const postId = req.params.id;
+
+  // Validate comment text
+  if (!text || text.trim().length === 0) {
+    return res.status(400).json({ message: "Comment text cannot be empty." });
+  }
+
+  if (text.length > 500) {
+    return res.status(400).json({ message: "Comment text cannot exceed 500 characters." });
+  }
+
+  try {
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const newComment = {
+      author: req.user.id, // The authenticated user's ID
+      text,
+    };
+
+    post.comments.push(newComment);
+    await post.save();
+
+    // Populate the author field in the response
+    const populatedComment = await Post.populate(post, {
+      path: "comments.author",
+      select: "firstName lastName profilePic",
+    });
+
+    res.status(201).json({
+      message: "✅ Comment added successfully!",
+      comment: populatedComment.comments[post.comments.length - 1], // Return the latest comment
+    });
+  } catch (error) {
+    console.error("Comment creation error:", error);
+    res.status(500).json({ message: "❌ Server error, please try again later." });
   }
 });
 
@@ -377,32 +427,48 @@ app.put("/profile", authenticateUser, async (req, res) => {
   }
 });
 // Search Posts by Category
-app.get('/posts/search', async (req, res) => {
-  console.log('🔍 Search route hit!'); 
-
-  const { category, title, content } = req.query; // Allow multiple filters
-
-  if (!category && !title && !content) {
-    return res.status(400).json({ message: "At least one search parameter is required" });
-  }
-
+// Search Posts by Category, Title, or Content
+app.get("/posts/search", async (req, res) => {
   try {
-    // Build search query dynamically
-    const searchQuery = {};
-    
-    if (category) searchQuery.category = { $regex: new RegExp(category, 'i') };
-    if (title) searchQuery.title = { $regex: new RegExp(title, 'i') };
-    if (content) searchQuery.content = { $regex: new RegExp(content, 'i') };
+    const { category, title, content } = req.query;
 
-    const posts = await Post.find(searchQuery).populate("author", "firstName lastName profilePic");
-    
-    console.log('🔎 Search Results:', posts);
-    res.json(posts.length > 0 ? posts : []); // Return an empty array if no results
+    // Validate at least one search parameter is provided
+    if (!category && !title && !content) {
+      return res.status(400).json({ message: "Please provide at least one search parameter (category, title, or content)." });
+    }
+
+    // Construct the filter dynamically
+    let filter = {};
+    if (category) filter.category = { $regex: category, $options: "i" }; // Case-insensitive search
+    if (title) filter.title = { $regex: title, $options: "i" }; // Case-insensitive search
+    if (content) filter.content = { $regex: content, $options: "i" }; // Case-insensitive search
+
+    // Fetch posts and populate the author field in a single query
+    const posts = await Post.find(filter)
+      .populate("author", "firstName lastName profilePic")
+      .exec();
+
+    if (posts.length === 0) {
+      return res.status(404).json({ message: "No posts found matching your search criteria." });
+    }
+
+    res.json(posts);
   } catch (error) {
-    console.error("❌ Search Error:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("Search Error:", error);
+    res.status(500).json({ message: "Server error, please try again later." });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import Post from '../components/Post';
-import FilterButtons from '../components/FilterButtons';
 import Footer from '../components/Footer';
 import PostDetails from '../components/PostDetails';
 import { FaBars } from 'react-icons/fa';
 import axios from 'axios'; // For making API requests
 
 const HomePage = () => {
-  const [filter, setFilter] = useState('all');
   const [selectedPost, setSelectedPost] = useState(null); // State for selected post
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar visibility
   const [posts, setPosts] = useState([]); // State to store fetched posts
@@ -31,13 +29,6 @@ const HomePage = () => {
 
     fetchPosts();
   }, []);
-
-  // Filter posts based on the selected filter
-  const filteredPosts = filter === 'all' 
-    ? posts 
-    : filter === 'community' 
-      ? posts.filter(post => post.category === 'community') 
-      : posts.filter(post => post.category === 'requested');
 
   // Handle post click to show post details
   const handlePostClick = (post) => {
@@ -80,13 +71,9 @@ const HomePage = () => {
             <PostDetails post={selectedPost} onBack={handleBackToPosts} /> // Show post details if a post is selected
           ) : (
             <>
-              <div className="filter-options">
-                <h2>Filter Posts</h2>
-                <FilterButtons onFilterChange={setFilter} />
-              </div>
               <div className="post-section">
-                {filteredPosts.length > 0 ? (
-                  filteredPosts.map((post) => (
+                {posts.length > 0 ? (
+                  posts.map((post) => (
                     <div key={post._id} onClick={() => handlePostClick(post)} className="post-container">
                       <Post {...post} />
                     </div>

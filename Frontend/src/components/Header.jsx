@@ -8,8 +8,10 @@ const Header = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?category=${searchQuery}`);
+    const trimmedQuery = searchQuery.trim();
+
+    if (trimmedQuery) {
+      navigate(`/search?query=${encodeURIComponent(trimmedQuery)}`);
     }
   };
 
@@ -19,7 +21,7 @@ const Header = () => {
       <div className="search-container">
         <input
           type="text"
-          placeholder="Search by category..."
+          placeholder="Search posts..."
           className="search-bar"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

@@ -8,17 +8,29 @@ const ProfileFeed = ({ author, time, title, content, type, image, price, categor
       <div className="post-header">
         <img src={author.profilePic} alt="Profile" className="profile-pic" />
         <div className="post-author">
-          <span className="author-name">{author.name}</span>
+          {/* Display first name and last name */}
+          <span className="author-name">
+            {author.firstName} {author.lastName}
+          </span>
           <span className="post-time">{time}</span>
         </div>
       </div>
 
       <h3>
-        <FaBullhorn /> {category === 'community' ? 'Community Post' : category === 'resource' ? 'Shared Resource' : 'General Post'}: {title}
+        <FaBullhorn />{' '}
+        {category === 'community'
+          ? 'Community Post'
+          : category === 'resource'
+          ? 'Shared Resource'
+          : 'General Post'}: {title}
       </h3>
       <p>{content}</p>
 
-      {image ? <img src={image} alt="Post" className="post-image" /> : <p className="no-image">No image available</p>}
+      {image ? (
+        <img src={image} alt="Post" className="post-image" />
+      ) : (
+        <p className="no-image">No image available</p>
+      )}
 
       <div className="post-footer">
         <div className="post-type">
@@ -30,9 +42,15 @@ const ProfileFeed = ({ author, time, title, content, type, image, price, categor
           </div>
         )}
         <div className="post-actions">
-          <button className="share-btn" onClick={() => alert('Shared!')}><FaShare /> Share</button>
-          <button className="comment-btn" onClick={() => alert('Comment clicked!')}><FaComment /> Comment</button>
-          <button className="edit-btn" onClick={onEdit}><FaEdit /> Edit</button>
+          <button className="share-btn" onClick={() => alert('Shared!')}>
+            <FaShare /> Share
+          </button>
+          <button className="comment-btn" onClick={() => alert('Comment clicked!')}>
+            <FaComment /> Comment
+          </button>
+          <button className="edit-btn" onClick={onEdit}>
+            <FaEdit /> Edit
+          </button>
         </div>
       </div>
     </div>
