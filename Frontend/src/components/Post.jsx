@@ -15,7 +15,7 @@ const Post = ({ author, time, title, content, type, image, price, category }) =>
         </div>
       </div>
       <h3>
-        <FaBullhorn /> {category === 'community' ? 'Community Post' : 'Requested Resource'}: {title}
+        <FaBullhorn /><span>{category === 'community' ? 'Community Post' : 'Requested Resource'}: {title}</span> 
       </h3>
       <p>{content}</p>
       {image && <img src={image} alt="Post" className="post-image" />}

@@ -149,9 +149,17 @@ header .search-bar {
     display: flex;
     align-items: center;
   }
+
+  .sidebar ul li span{
+    margin-left: 10px;
+  }
+
+  .sidebar h2 span{
+    margin-left: 10px;
+  }
   
   .sidebar ul li i {
-    margin-right: 10px; /* Space between icon and text */
+    margin-right: 10px;
   }
   
   
@@ -187,6 +195,7 @@ header .search-bar {
   
   /* Newsfeed */
   .newsfeed {
+    width: 20px;
     flex-grow: 1;
     background-color: white;
     padding: 20px;

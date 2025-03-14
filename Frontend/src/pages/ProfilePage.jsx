@@ -4,6 +4,8 @@ import axios from "axios";
 import Post from "../components/ProfileFeed";
 import PostDetails from "../components/PostDetails";
 import "../styles/Profile.css";
+import defaultProfilePic from "../assets/default-profile.png"
+
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -106,7 +108,7 @@ const ProfilePage = () => {
               <div className="profile-info">
                 <label htmlFor="profilePicUpload" className="profile-pic-label">
                   <img
-                    src={newProfilePic || user.profilePic || "default-profile.png"}
+                    src={newProfilePic || user.profilePic || defaultProfilePic}
                     alt="Profile"
                     className="profile-pic"
                   />
@@ -118,7 +120,7 @@ const ProfilePage = () => {
                     onChange={handleProfilePicChange}
                   />
                 </label>
-                <h1>
+                <h1 className="profile-name">
                   {user.firstName} {user.lastName}
                 </h1>
                 <p className="profile-bio">{user.bio || "No bio available."}</p>

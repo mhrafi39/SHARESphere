@@ -9,6 +9,12 @@
 
 }
 
+.profile-name {
+  color: rgb(0, 0, 0); /* Change this to your desired color */
+  font-size: 24px; /* Optional: Adjust font size */
+  font-weight: bold; /* Optional: Adjust font weight */
+}
+
 /* Hamburger Icon (3 lines) */
 .hamburger-icon {
   display: none; 
@@ -76,6 +82,8 @@
   margin-right: 250px; /* Push the middle section to the left when sidebar is open */
 }
 
+
+
 /* Profile page specific styles */
 .profile-header {
   display: flex;
@@ -98,8 +106,8 @@
 }
 
 .profile-info .profile-pic {
-  width: 120px;
-  height: 120px;
+  width: 300px;
+  height: 300px;
   border-radius: 50%;
   object-fit: cover;
   margin-top: -20px;
