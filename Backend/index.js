@@ -570,6 +570,109 @@ app.delete("/delete-account", authenticateUser, async (req, res) => {
   }
 });
 
+
+
+
+//searching
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+
+// Get all posts
+const getAllPosts = async (req, res) => {
+  const { type, title, category, sort, select } = req.query;
+  const queryObject = {};
+
+  if (type) {
+    queryObject.type = type;
+  }
+
+  if (category) {
+    queryObject.category = category;
+  }
+
+  if (title) {
+    queryObject.title = { $regex: title, $options: "i" };
+  }
+
+  let apiData = Post.find(queryObject);
+
+  if (sort) {
+    let sortFix = sort.split(",").join(" ");
+    apiData = apiData.sort(sortFix);
+  }
+
+  if (select) {
+    let selectFix = select.split(",").join(" ");
+    apiData = apiData.select(selectFix);
+  }
+
+  let page = Number(req.query.page) || 1;
+  let limit = Number(req.query.limit) || 7;
+
+  let skip = (page - 1) * limit;
+
+  apiData = apiData.skip(skip).limit(limit);
+
+  try {
+    const myData = await apiData;
+    res.status(200).json({ myData, nbHits: myData.length });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Get posts by category
+const getPostsByCategory = async (req, res) => {
+  const { category } = req.query;
+
+  if (!category) {
+    return res.status(400).json({ message: "Category is required" });
+  }
+
+  try {
+    const posts = await Post.find({ category: category });
+    res.status(200).json({ posts, nbHits: posts.length });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Define routes for posts
+const router = express.Router();
+router.route('/').get(getAllPosts); // Get all posts
+router.route('/posts/category').get(getPostsByCategory); // Get posts by category
+
+// Use the routes for the API
+app.use("/api/products", router); // This will now use /api/posts and /api/posts/category
+
+// Sample root endpoint
+app.get("/", (req, res) => {
+  res.send("Hi, I am live");
+});
+
+// Connect to MongoDB and start the server
+const start = async () => {
+  try {
+    
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Error connecting to the database:', error);
+  }
+};
+
+// Start the application
+start();
+
+
+
+
 // Start Server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

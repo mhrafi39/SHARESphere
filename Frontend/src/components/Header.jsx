@@ -1,17 +1,35 @@
+// Header.js
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaHome, FaPlus, FaEnvelope, FaUser, FaSearch } from 'react-icons/fa';
+import axios from 'axios';
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
+  // Function to handle search
+  const handleSearch = async (e) => {
     e.preventDefault();
     const trimmedQuery = searchQuery.trim();
 
     if (trimmedQuery) {
-      navigate(`/search?query=${encodeURIComponent(trimmedQuery)}`);
+      try {
+        // Fetch posts from the backend API
+        const apiUrl = 'http://localhost:4000/api/products';
+        const response = await axios.get(`${apiUrl}?title=${encodeURIComponent(trimmedQuery)}`);
+        const searchResults = response.data.myData;
+
+        // Navigate to the PostSearch page and pass the search results as state
+        navigate('/post-search', { state: { searchResults, searchQuery: trimmedQuery } });
+      } catch (err) {
+        console.error('Error fetching posts:', err);
+        // Navigate to the PostSearch page with empty results
+        navigate('/post-search', { state: { searchResults: [], searchQuery: trimmedQuery } });
+      }
+    } else {
+      // Navigate to the PostSearch page with empty results if the query is empty
+      navigate('/post-search', { state: { searchResults: [], searchQuery: '' } });
     }
   };
 

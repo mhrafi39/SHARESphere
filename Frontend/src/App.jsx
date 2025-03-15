@@ -20,6 +20,8 @@ import OTPVerification from './pages/OTP';
 import AdminPage from './pages/AdminPage';
 import SearchResults from './pages/SearchResults';
 
+import PostSearch from './pages/PostSearch';
+
 const App = () => {
   return (
     <>
@@ -43,6 +45,9 @@ const App = () => {
         <Route path="/otp" element={< OTPVerification/>} />
         <Route path="/admin" element={<AdminPage/>}/>
         <Route path="/search" element={<SearchResults />} />
+
+        <Route path="/post-search" element={<PostSearch />} /> {/* PostSearch route */}
+      
       </Routes>
     </>
   );
