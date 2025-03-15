@@ -4,6 +4,10 @@
     margin: 0 auto;
 }
 
+.admin-page h1{
+    color: rgb(54, 108, 216);
+}
+
 .user-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

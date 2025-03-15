@@ -1,4 +1,3 @@
-// Header.js
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaHome, FaPlus, FaEnvelope, FaUser, FaSearch } from 'react-icons/fa';
@@ -33,9 +32,17 @@ const Header = () => {
     }
   };
 
+  // Function to handle logo click
+  const handleLogoClick = () => {
+    navigate('/home'); // Navigate to the homepage
+  };
+
   return (
     <header>
-      <div className="logo">SHARESphere</div>
+      {/* Logo with click handler */}
+      <div className="logo" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
+        SHARESphere
+      </div>
       <div className="search-container">
         <input
           type="text"

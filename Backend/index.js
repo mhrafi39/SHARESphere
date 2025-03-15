@@ -322,25 +322,77 @@ app.get("/admin/all-users", async (req, res) => {
   }
 });
 
+
+
+
+
+
+
 app.post("/admin/approve-user/:userId", async (req, res) => {
   const { userId } = req.params;
   const { action } = req.body;
 
   try {
-      const user = await User.findById(userId);
-      if (!user) {
-          return res.status(404).json({ message: "User not found" });
-      }
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-      user.adminVerified = action === "approve";
-      await user.save();
+    // Update user status
+    user.adminVerified = action === "approve";
+    await user.save();
 
-      res.json({ message: `User ${action === "approve" ? "approved" : "rejected"} successfully!` });
+    // Send email notification based on action
+    const mailOptions = {
+      from: `"SHARESphere Admin" <${process.env.EMAIL_USER}>`, // Sender address
+      to: user.emailOrPhone, // User's email or phone (assuming emailOrPhone is an email)
+      subject:
+        action === "approve"
+          ? "Your SHARESphere Account Has Been Approved"
+          : "Your SHARESphere Account Has Been Rejected", // Email subject
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #f9f9f9;">
+          <div style="text-align: center; padding: 20px; background-color: ${action === "approve" ? "#4CAF50" : "#f44336"}; border-radius: 10px 10px 0 0;">
+            <h2 style="color: white; margin: 0;">
+              ${action === "approve" ? "Account Approved!" : "Account Rejected"}
+            </h2>
+          </div>
+          <div style="padding: 20px;">
+            <p>Hello <strong>${user.firstName} ${user.lastName}</strong>,</p>
+            <p>
+              ${
+                action === "approve"
+                  ? "We are pleased to inform you that your SHARESphere account has been approved by the admin. You can now log in and start using all the features of SHARESphere."
+                  : "We regret to inform you that your SHARESphere account has been rejected by the admin. If you believe this is a mistake, please contact us."
+              }
+            </p>
+            <p>
+              If you have any questions, feel free to contact us at
+              <a href="mailto:support@sharesphere.com" style="color: #4CAF50; text-decoration: none;">
+                support@sharesphere.com
+              </a>.
+            </p>
+            <p>Best regards,</p>
+            <p><strong>The SHARESphere Team</strong></p>
+          </div>
+          <div style="text-align: center; padding: 10px; background-color: #f1f1f1; border-radius: 0 0 10px 10px; font-size: 12px; color: #666;">
+            <p>This is an automated message. Please do not reply to this email.</p>
+          </div>
+        </div>
+      `, // Email content (HTML)
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+
+    res.json({ message: `User ${action === "approve" ? "approved" : "rejected"} successfully!` });
   } catch (error) {
-      console.error("Error approving/rejecting user:", error);
-      res.status(500).json({ message: "Failed to update user status" });
+    console.error("Error approving/rejecting user:", error);
+    res.status(500).json({ message: "Failed to update user status" });
   }
 });
+
+
 
 // Get User Profile
 app.get("/profile", authenticateUser, async (req, res) => {
@@ -499,50 +551,6 @@ app.put("/profile", authenticateUser, async (req, res) => {
     res.status(500).json({ message: "❌ Server error, please try again later." });
   }
 });
-// Search Posts by Category
-// Search Posts by Category, Title, or Content
-app.get("/posts/search", async (req, res) => {
-  try {
-    const { category, title, content } = req.query;
-
-    // Validate at least one search parameter is provided
-    if (!category && !title && !content) {
-      return res.status(400).json({ message: "Please provide at least one search parameter (category, title, or content)." });
-    }
-
-    // Construct the filter dynamically
-    let filter = {};
-    if (category) filter.category = { $regex: category, $options: "i" }; // Case-insensitive search
-    if (title) filter.title = { $regex: title, $options: "i" }; // Case-insensitive search
-    if (content) filter.content = { $regex: content, $options: "i" }; // Case-insensitive search
-
-    // Fetch posts and populate the author field in a single query
-    const posts = await Post.find(filter)
-      .populate("author", "firstName lastName profilePic")
-      .exec();
-
-    if (posts.length === 0) {
-      return res.status(404).json({ message: "No posts found matching your search criteria." });
-    }
-
-    res.json(posts);
-  } catch (error) {
-    console.error("Search Error:", error);
-    res.status(500).json({ message: "Server error, please try again later." });
-  }
-});
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
