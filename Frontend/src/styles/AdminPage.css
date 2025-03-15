@@ -1,88 +1,48 @@
-
-
 .admin-page {
+    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
 }
 
-.admin-page h1 {
-    text-align: center;
-    color: #333;
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-}
-
-.admin-page h2 {
-    color: #555;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-}
-
-.no-users {
-    text-align: center;
-    color: #777;
-    font-size: 1.2rem;
-}
-
-/* User List */
 .user-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
 }
 
 .user-card {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    border-radius: 8px;
     padding: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.user-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.user-info {
-    margin-bottom: 15px;
+    background-color: #f9f9f9;
 }
 
 .user-info h3 {
-    margin: 0;
-    color: #333;
-    font-size: 1.5rem;
+    margin: 0 0 10px;
 }
 
 .user-info p {
     margin: 5px 0;
-    color: #555;
-    font-size: 1rem;
 }
 
-/* NID/Passport Image */
 .nid-passport img {
-    width: 100%;
-    border-radius: 10px;
+    max-width: 100%;
+    border-radius: 8px;
     margin-top: 10px;
 }
 
-/* Buttons */
 .actions {
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
     margin-top: 15px;
 }
 
-.approve-btn,
-.reject-btn {
-    padding: 10px 20px;
+.approve-btn, .reject-btn {
+    padding: 8px 16px;
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
+    border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 14px;
 }
 
 .approve-btn {
@@ -90,30 +50,29 @@
     color: white;
 }
 
-.approve-btn:hover {
-    background-color: #45a049;
-}
-
 .reject-btn {
     background-color: #f44336;
     color: white;
 }
 
-.reject-btn:hover {
-    background-color: #e53935;
+.status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .user-list {
-        grid-template-columns: 1fr;
-    }
+.status.approved {
+    background-color: #4CAF50;
+    color: white;
+}
 
-    .admin-page h1 {
-        font-size: 2rem;
-    }
+.status.pending {
+    background-color: #FFA500;
+    color: white;
+}
 
-    .admin-page h2 {
-        font-size: 1.5rem;
-    }
+.loading, .no-users {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px;
 }

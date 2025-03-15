@@ -48,8 +48,12 @@ const LoginPage = () => {
         // Store JWT token in localStorage
         localStorage.setItem("token", data.token);
 
-        // Redirect after successful login
-        navigate("/home");
+        // Redirect based on user role and verification status
+        if (data.user.isAdmin) {
+          navigate("/admin"); // Redirect to admin dashboard
+        } else {
+          navigate("/home"); // Redirect to home page for regular users
+        }
       } catch (error) {
         setErrorMessage(error.message || "Server error. Please try again later.");
       } finally {
