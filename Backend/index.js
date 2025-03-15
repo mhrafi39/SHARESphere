@@ -658,13 +658,7 @@ app.get("/", (req, res) => {
 // Connect to MongoDB and start the server
 const start = async () => {
   try {
-    // Connect to MongoDB (Uncomment if you have the Mongo URI in the .env file)
-    //await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/mydatabase', {
-      //useNewUrlParser: true,
-      //useUnifiedTopology: true
-    //});
-
-    //const PORT = process.env.PORT || 4000;
+    
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });

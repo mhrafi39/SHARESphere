@@ -46,7 +46,7 @@ const App = () => {
         <Route path="/admin" element={<AdminPage/>}/>
         <Route path="/search" element={<SearchResults />} />
 
-        <Route path="/searching" element={<PostSearch/>}/>
+        <Route path="/post-search" element={<PostSearch />} /> {/* PostSearch route */}
       
       </Routes>
     </>
