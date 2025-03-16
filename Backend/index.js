@@ -670,6 +670,148 @@ const start = async () => {
 // Start the application
 start();
 
+////////////////
+
+
+import http from 'http';
+import { Server } from 'socket.io';
+
+
+dotenv.config();
+
+const server = http.createServer(app);
+const io = new Server(server);
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.log('Error connecting to MongoDB:', err));
+
+
+// Message Model
+const MessageSchema = new mongoose.Schema({
+  senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  receiverId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  message: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+});
+const Message = mongoose.model('Message', MessageSchema);
+
+// Socket.IO User Management
+let users = {};  // Mapping of socket ids to user ids
+
+// Middleware for JWT Authentication
+const authenticateToken = (req, res, next) => {
+  const token = req.header('Authorization');
+  if (!token) return res.status(403).json({ message: 'Access denied' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: 'Invalid token' });
+    req.user = user;
+    next();
+  });
+};
+
+// Routes
+
+// Get all messages for a specific conversation (between two users)
+app.get('/api/messages/:userId/:otherUserId', authenticateToken, async (req, res) => {
+  try {
+    const { userId, otherUserId } = req.params;
+    const messages = await Message.find({
+      $or: [
+        { senderId: userId, receiverId: otherUserId },
+        { senderId: otherUserId, receiverId: userId },
+      ]
+    }).sort({ timestamp: 1 });
+    
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching messages' });
+  }
+});
+
+// Send a new message
+app.post('/api/messages', authenticateToken, async (req, res) => {
+  try {
+    const { receiverId, message } = req.body;
+    const senderId = req.user.id;
+
+    const newMessage = new Message({ senderId, receiverId, message });
+    await newMessage.save();
+
+    // Emit the new message to the specific receiver
+    if (users[receiverId]) {
+      io.to(users[receiverId]).emit('receiveMessage', newMessage);
+    }
+
+    res.status(201).json(newMessage);
+  } catch (err) {
+    res.status(500).json({ message: 'Error sending message' });
+  }
+});
+
+// Register a new user
+app.post('/api/register', async (req, res) => {
+  const { username, email, password } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = new User({ username, email, password: hashedPassword });
+
+  try {
+    await newUser.save();
+    const token = jwt.sign({ id: newUser._id, username: newUser.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ message: 'Error registering user' });
+  }
+});
+
+// Login user
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+
+  const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  res.json({ token });
+});
+
+// Real-time messaging with Socket.io
+io.on('connection', (socket) => {
+  console.log('A user connected: ' + socket.id);
+
+  // When a user logs in, associate their socket ID with their user ID
+  socket.on('login', (userId) => {
+    users[userId] = socket.id;
+    console.log(`User ${userId} connected with socket ID: ${socket.id}`);
+  });
+
+  // Listen for user disconnect
+  socket.on('disconnect', () => {
+    for (const userId in users) {
+      if (users[userId] === socket.id) {
+        delete users[userId];
+        console.log(`User ${userId} disconnected`);
+        break;
+      }
+    }
+  });  
+});
+
+
+///////////////////
 
 
 
